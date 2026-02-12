@@ -1,0 +1,174 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==========================
+// ENUMS
+// ==========================
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum EventSeatStatus {
+  AVAILABLE
+  LOCKED
+  BOOKED
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  EXPIRED
+}
+
+enum PaymentStatus {
+  CREATED
+  SUCCESS
+  FAILED
+  REFUNDED
+}
+
+// ==========================
+// USERS
+// ==========================
+model User {
+  id           Int       @id @default(autoincrement())
+  email        String    @unique
+  password     String
+  role         UserRole  @default(USER)
+
+  firstName   String
+  lastName    String?
+
+  avatarUrl    String?
+  phone        String?
+  isVerified   Boolean   @default(false)
+
+  bookings     Booking[]
+  lockedSeats  EventSeat[] @relation("SeatLocks")
+
+  createdAt    DateTime  @default(now())
+}
+
+// ==========================
+// EVENTS
+// ==========================
+model Event {
+  id          Int         @id @default(autoincrement())
+  title       String
+
+  imageUrl    String?
+  description String?
+  language    String?
+  category    String?
+
+  startTime   DateTime
+  endTime     DateTime
+
+  eventSeats  EventSeat[]
+  bookings    Booking[]
+
+  createdAt   DateTime    @default(now())
+}
+
+// ==========================
+// PHYSICAL SEATS (AUDITORIUM)
+// ==========================
+model Seat {
+  id        Int         @id @default(autoincrement())
+  row       String
+  number    Int
+
+  eventSeats EventSeat[]
+
+  @@unique([row, number])
+}
+
+// ==========================
+// EVENT SEATS (STATE PER EVENT)
+// ==========================
+model EventSeat {
+  id        Int             @id @default(autoincrement())
+
+  eventId   Int
+  seatId    Int
+
+  status    EventSeatStatus @default(AVAILABLE)
+
+  lockedBy  Int?
+  lockedAt  DateTime?
+
+  event     Event           @relation(fields: [eventId], references: [id])
+  seat      Seat            @relation(fields: [seatId], references: [id])
+
+  locker    User?           @relation("SeatLocks", fields: [lockedBy], references: [id])
+
+  bookingSeats BookingSeat[]
+
+  @@unique([eventId, seatId])
+}
+
+// ==========================
+// BOOKINGS
+// ==========================
+model Booking {
+  id               Int           @id @default(autoincrement())
+  userId           Int
+  eventId          Int
+
+  bookingReference String        @unique
+  invoiceUrl       String?
+  qrCodeUrl        String?
+
+  status           BookingStatus @default(PENDING)
+  totalAmount      Float
+
+  user             User          @relation(fields: [userId], references: [id])
+  event            Event         @relation(fields: [eventId], references: [id])
+
+  bookingSeats     BookingSeat[]
+  payment          Payment?
+
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+}
+
+// ==========================
+// BOOKING_SEATS (JOIN TABLE)
+// ==========================
+model BookingSeat {
+  bookingId   Int
+  eventSeatId Int
+
+  booking     Booking   @relation(fields: [bookingId], references: [id])
+  eventSeat   EventSeat @relation(fields: [eventSeatId], references: [id])
+
+  @@id([bookingId, eventSeatId])
+}
+
+// ==========================
+// PAYMENTS
+// ==========================
+model Payment {
+  id                Int           @id @default(autoincrement())
+  bookingId         Int           @unique 
+
+  provider          String
+  status            PaymentStatus
+  amount            Float
+
+  gatewayOrderId    String?
+  gatewayPaymentId String?
+  receiptUrl        String?
+
+  booking           Booking       @relation(fields: [bookingId], references: [id])
+
+  createdAt         DateTime      @default(now())
+}
