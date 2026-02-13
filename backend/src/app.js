@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import eventRoutes from "./routes/event.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import userRoutes from "./routes/user.routes.js";
+import bookingRoutes from "./routes/booking.routes.js";
 
 const app = express();
 
@@ -18,8 +19,8 @@ app.use(
           origin: process.env.ALLOWED_ORIGINS.split(","),
           credentials: true,
         }
-      : undefined
-  )
+      : undefined,
+  ),
 );
 
 // Body & cookies
@@ -30,6 +31,7 @@ app.use(cookieParser());
 app.use("/events", eventRoutes);
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
+app.use("/bookings", bookingRoutes);
 
 // Global error handler
 app.use((err, req, res, next) => {

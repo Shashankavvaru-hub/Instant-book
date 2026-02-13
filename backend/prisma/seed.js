@@ -10,6 +10,7 @@ async function main() {
   // --------------------
   const admin = await prisma.user.create({
     data: {
+      firstName: "Admin",
       email: "admin@rgukt.ac.in",
       password: "hashedpassword", // replace later with bcrypt hash
       role: "ADMIN",

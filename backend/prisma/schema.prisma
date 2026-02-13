@@ -17,7 +17,6 @@ enum UserRole {
 
 enum EventSeatStatus {
   AVAILABLE
-  LOCKED
   BOOKED
 }
 
@@ -39,52 +38,50 @@ enum PaymentStatus {
 // USERS
 // ==========================
 model User {
-  id           Int       @id @default(autoincrement())
-  email        String    @unique
-  password     String
-  role         UserRole  @default(USER)
+  id       Int      @id @default(autoincrement())
+  email    String   @unique
+  password String
+  role     UserRole @default(USER)
 
-  firstName   String
-  lastName    String?
+  firstName String
+  lastName  String?
 
-  avatarUrl    String?
-  phone        String?
-  isVerified   Boolean   @default(false)
+  avatarUrl  String?
+  phone      String?
+  isVerified Boolean @default(false)
 
-  bookings     Booking[]
-  lockedSeats  EventSeat[] @relation("SeatLocks")
-
-  createdAt    DateTime  @default(now())
+  createdAt DateTime  @default(now())
+  Bookings   Booking[]
 }
 
 // ==========================
 // EVENTS
 // ==========================
 model Event {
-  id          Int         @id @default(autoincrement())
-  title       String
+  id    Int    @id @default(autoincrement())
+  title String
 
   imageUrl    String?
   description String?
   language    String?
   category    String?
 
-  startTime   DateTime
-  endTime     DateTime
+  startTime DateTime
+  endTime   DateTime
 
-  eventSeats  EventSeat[]
-  bookings    Booking[]
+  eventSeats EventSeat[]
+  bookings   Booking[]
 
-  createdAt   DateTime    @default(now())
+  createdAt DateTime @default(now())
 }
 
 // ==========================
 // PHYSICAL SEATS (AUDITORIUM)
 // ==========================
 model Seat {
-  id        Int         @id @default(autoincrement())
-  row       String
-  number    Int
+  id     Int    @id @default(autoincrement())
+  row    String
+  number Int
 
   eventSeats EventSeat[]
 
@@ -95,49 +92,51 @@ model Seat {
 // EVENT SEATS (STATE PER EVENT)
 // ==========================
 model EventSeat {
-  id        Int             @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
-  eventId   Int
-  seatId    Int
+  eventId Int
+  seatId  Int
 
-  status    EventSeatStatus @default(AVAILABLE)
+  status EventSeatStatus @default(AVAILABLE)
 
-  lockedBy  Int?
-  lockedAt  DateTime?
+  event Event @relation(fields: [eventId], references: [id])
+  seat  Seat  @relation(fields: [seatId], references: [id])
 
-  event     Event           @relation(fields: [eventId], references: [id])
-  seat      Seat            @relation(fields: [seatId], references: [id])
-
-  locker    User?           @relation("SeatLocks", fields: [lockedBy], references: [id])
-
-  bookingSeats BookingSeat[]
+  bookingSeat BookingSeat?
 
   @@unique([eventId, seatId])
+  @@index([eventId])
+  @@index([eventId, status])
 }
 
 // ==========================
 // BOOKINGS
 // ==========================
 model Booking {
-  id               Int           @id @default(autoincrement())
-  userId           Int
-  eventId          Int
+  id      Int @id @default(autoincrement())
+  userId  Int
+  eventId Int
 
-  bookingReference String        @unique
+  bookingReference String  @unique
   invoiceUrl       String?
   qrCodeUrl        String?
 
-  status           BookingStatus @default(PENDING)
-  totalAmount      Float
+  status      BookingStatus @default(PENDING)
+  totalAmount Decimal       @db.Decimal(10, 2)
 
-  user             User          @relation(fields: [userId], references: [id])
-  event            Event         @relation(fields: [eventId], references: [id])
+  user  User  @relation(fields: [userId], references: [id])
+  event Event @relation(fields: [eventId], references: [id])
 
-  bookingSeats     BookingSeat[]
-  payment          Payment?
+  expiresAt DateTime
 
-  createdAt        DateTime      @default(now())
-  updatedAt        DateTime      @updatedAt
+  bookingSeats BookingSeat[]
+  payment      Payment?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([eventId])
 }
 
 // ==========================
@@ -145,30 +144,30 @@ model Booking {
 // ==========================
 model BookingSeat {
   bookingId   Int
-  eventSeatId Int
+  eventSeatId Int @id
 
-  booking     Booking   @relation(fields: [bookingId], references: [id])
-  eventSeat   EventSeat @relation(fields: [eventSeatId], references: [id])
+  booking   Booking   @relation(fields: [bookingId], references: [id])
+  eventSeat EventSeat @relation(fields: [eventSeatId], references: [id])
 
-  @@id([bookingId, eventSeatId])
+  @@index([bookingId])
 }
 
 // ==========================
 // PAYMENTS
 // ==========================
 model Payment {
-  id                Int           @id @default(autoincrement())
-  bookingId         Int           @unique 
+  id        Int @id @default(autoincrement())
+  bookingId Int @unique
 
-  provider          String
-  status            PaymentStatus
-  amount            Float
+  provider String
+  status   PaymentStatus @default(CREATED)
+  amount   Decimal       @db.Decimal(10, 2)
 
-  gatewayOrderId    String?
+  gatewayOrderId   String?
   gatewayPaymentId String?
-  receiptUrl        String?
+  receiptUrl       String?
 
-  booking           Booking       @relation(fields: [bookingId], references: [id])
+  booking Booking @relation(fields: [bookingId], references: [id])
 
-  createdAt         DateTime      @default(now())
+  createdAt DateTime @default(now())
 }
