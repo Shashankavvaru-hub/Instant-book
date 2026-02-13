@@ -1,0 +1,157 @@
+1. POST /api/bookings
+Purpose
+
+Lock selected seats and create a PENDING booking.
+
+Request Body
+{
+  "eventId": 1,
+  "seatIds": [5, 6, 7]
+}
+Flow
+
+Validate event
+
+Validate seats belong to event
+
+Ensure seats are AVAILABLE
+
+Lock seats in Redis
+
+Create booking (status = PENDING)
+
+Insert bookingSeats
+
+Return booking details
+
+2. GET /api/bookings/:bookingId
+Purpose
+
+Get booking summary before payment.
+
+Response Example
+{
+  "id": 12,
+  "event": {
+    "id": 1,
+    "title": "RGUKT Annual Fest"
+  },
+  "seats": [
+    { "row": "A", "number": 1 },
+    { "row": "A", "number": 2 }
+  ],
+  "totalAmount": 900,
+  "status": "PENDING",
+  "expiresAt": "2026-02-14T18:35:00Z"
+}
+3. POST /api/bookings/:bookingId/cancel
+Purpose
+
+Cancel a pending booking and release locks.
+
+Body
+
+No body required.
+
+Flow
+
+Validate booking ownership
+
+Ensure booking status is PENDING
+
+Release Redis locks
+
+Update booking status → CANCELLED
+
+4. POST /api/payments/create
+Purpose
+
+Create payment order after booking is created.
+
+Request Body
+{
+  "bookingId": 12
+}
+Flow
+
+Validate booking exists
+
+Ensure status = PENDING
+
+Ensure booking not expired
+
+Create Payment record
+
+Create payment gateway order
+
+Return order details
+
+Response Example
+{
+  "paymentId": 8,
+  "gatewayOrderId": "order_KJSD9823",
+  "amount": 900,
+  "currency": "INR",
+  "publicKey": "rzp_test_ABC123"
+}
+5. POST /api/payments/webhook
+Purpose
+
+Handle payment gateway webhook to confirm booking.
+
+⚠️ Not called by frontend.
+
+Example Webhook Body
+{
+  "event": "payment.captured",
+  "payload": {
+    "payment": {
+      "entity": {
+        "id": "pay_123",
+        "order_id": "order_ABC",
+        "amount": 90000,
+        "status": "captured"
+      }
+    }
+  }
+}
+Backend Flow (Inside Transaction)
+
+Verify signature
+
+Fetch payment using gatewayOrderId
+
+Lock booking row (FOR UPDATE)
+
+Verify seats still AVAILABLE
+
+Update:
+
+eventSeats → BOOKED
+
+booking.status → CONFIRMED
+
+payment.status → SUCCESS
+
+Commit transaction
+
+6. GET /api/events/:eventId/seats
+Purpose
+
+Fetch seat map with availability status.
+
+Response Example
+[
+  {
+    "eventSeatId": 5,
+    "row": "A",
+    "number": 1,
+    "status": "AVAILABLE"
+  },
+  {
+    "eventSeatId": 6,
+    "row": "A",
+    "number": 2,
+    "status": "BOOKED"
+  }
+]
