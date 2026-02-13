@@ -1,23 +1,40 @@
 import { AppError } from "../utils/AppError.js";
 import { catchAsync } from "../utils/catchAsync.js";
-import { lockSeats } from "../services/booking.service.js";
+import { createBooking } from "../services/booking.service.js";
 
 export const holdSeats = catchAsync(async (req, res, next) => {
-  const { eventId, seats } = req.body;
+  const { eventId, eventSeatIds } = req.body;
   const userId = req.user.id;
 
-  const aquired = await lockSeats(eventId, seats, userId);
-  if (!aquired) {
+  const booking = await createBooking(eventId, eventSeatIds, userId);
+  if (!booking) {
     return next(
       new AppError(
-        "Some of the seats are already booked, please try again",
+        "Unable to hold seats, they may have just been booked by someone else. Please try again.",
         409,
       ),
     );
   }
   res.status(200).json({
     message:
-      "Seats held successfully, please confirm booking within 10 minutes",
+      "Seats held successfully! Please proceed to payment within 2 minutes to confirm your booking.",
   });
 });
 
+export const getBookingDetails = catchAsync(async (req, res, next) => {
+  const { bookingId } = req.params;
+  // Logic to retrieve booking details by bookingId
+  res.status(200).json({
+    success: true,
+    message: `Booking details for ID: ${bookingId}`,
+  });
+});
+
+export const cancelBooking = catchAsync(async (req, res, next) => {
+  const { bookingId } = req.params;
+  // Logic to cancel booking by bookingId
+  res.status(200).json({
+    success: true,
+    message: `Booking with ID: ${bookingId} has been cancelled`,
+  });
+});

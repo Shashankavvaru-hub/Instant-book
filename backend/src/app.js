@@ -28,10 +28,11 @@ app.use(json());
 app.use(cookieParser());
 
 // Routes
-app.use("/events", eventRoutes);
-app.use("/auth", authRoutes);
-app.use("/user", userRoutes);
-app.use("/bookings", bookingRoutes);
+app.use("/api/events", eventRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/user", userRoutes);
+app.use("/api/bookings", bookingRoutes);
+app.use("/api/redis", (await import("./routes/redis.route.js")).default);
 
 // Global error handler
 app.use((err, req, res, next) => {
