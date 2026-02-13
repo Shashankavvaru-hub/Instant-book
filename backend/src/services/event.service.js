@@ -38,6 +38,18 @@ export const createEventService = async (data, file) => {
     },
   });
 
+  const seats = await prisma.seat.findMany();
+
+  const eventSeatData = seats.map((seat) => ({
+    eventId: event.id,
+    seatId: seat.id,
+    status: "AVAILABLE",
+  }));
+
+  await prisma.eventSeat.createMany({
+    data: eventSeatData,
+  });
+
   return event;
 };
 
