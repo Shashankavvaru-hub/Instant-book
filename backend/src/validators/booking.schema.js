@@ -2,13 +2,8 @@ import { z } from "zod";
 
 export const holdSeatsSchema = z.object({
   body: z.object({
-    eventId: z.number(),
-    seats: z.array(
-      z.object({
-        row: z.string(),
-        number: z.number(),
-      })
-    ).min(1),
+    eventId: z.number().int().positive(),
+    eventSeatIds: z.array(z.number().int().positive()).min(1, "Select at least one seat"),
   }),
 });
 

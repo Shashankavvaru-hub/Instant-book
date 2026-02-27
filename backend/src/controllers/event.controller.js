@@ -3,6 +3,7 @@ import {
   createEventService,
   getEventsService,
   getEventByIdService,
+  getEventSeatsService,
 } from "../services/event.service.js";
 
 export const createEvent = catchAsync(async (req, res) => {
@@ -31,5 +32,15 @@ export const getEventById = catchAsync(async (req, res) => {
   res.status(200).json({
     success: true,
     event,
+  });
+});
+
+export const getEventSeats = catchAsync(async (req, res) => {
+  const eventId = Number(req.params.id);
+
+  const seats = await getEventSeatsService(eventId);
+  res.status(200).json({
+    success: true,
+    seats,
   });
 });

@@ -70,3 +70,19 @@ export const getEventByIdService = async (eventId) => {
 
   return event;
 };
+
+export const getEventSeatsService = async (eventId) => {
+
+  if(!eventId) throw new AppError("Event ID is required", 400);
+
+  const seats = await prisma.eventSeat.findMany({
+    where: { 
+      eventId : Number(eventId)
+    },
+    include:{
+      seat: true
+    }
+  });
+
+  return seats;
+};

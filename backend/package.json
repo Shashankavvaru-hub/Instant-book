@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "start" : "node src/index.js",
     "dev": "nodemon src/index.js",
     "db:push": "prisma db push",
     "db:seed": "prisma db seed",
@@ -25,20 +26,25 @@
     "cloudinary": "^1.41.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
+    "crypto": "^1.0.1",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "multer": "^2.0.2",
     "multer-storage-cloudinary": "^4.0.0",
+    "node-cron": "^4.2.1",
     "nodemon": "^3.1.11",
     "pg": "^8.18.0",
+    "qrcode": "^1.5.4",
+    "razorpay": "^2.9.6",
+    "resend": "^6.9.2",
     "zod": "^4.3.6"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/pg": "^8.16.0",
-    "prisma": "5.21.1",
+    "prisma": "^5.21.1",
     "tsx": "^4.21.0"
   }
 }
