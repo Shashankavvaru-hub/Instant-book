@@ -59,6 +59,7 @@ export interface Booking {
 
 export interface BookingDetail {
   id: number;
+  bookingReference: string;
   totalAmount: string;
   status: "PENDING" | "CONFIRMED" | "CANCELLED" | "EXPIRED";
   expiresAt: string;
