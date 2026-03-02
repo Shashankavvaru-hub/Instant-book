@@ -1,3 +1,4 @@
+import jwt from "jsonwebtoken";
 import { verifyToken } from "../utils/jwt.js";
 import { AppError } from "../utils/AppError.js";
 import { prisma } from "../config/prisma.js";
@@ -7,7 +8,15 @@ export const protect = async (req, res, next) => {
 
   if (!token) return next(new AppError("Not authenticated", 401));
 
-  const decoded = await verifyToken(token);
+  let decoded;
+  try {
+    decoded = verifyToken(token);
+  } catch (err) {
+    if (err instanceof jwt.TokenExpiredError) {
+      return next(new AppError("Session expired, please log in again", 401));
+    }
+    return next(new AppError("Invalid token, please log in again", 401));
+  }
 
   const user = await prisma.user.findUnique({
     where: { id: decoded.sub },
