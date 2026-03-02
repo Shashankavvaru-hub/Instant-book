@@ -277,9 +277,11 @@ export const getBookingDetailsService = async (bookingId) => {
     where: { id: Number(bookingId) },
     select: {
       id: true,
+      bookingReference: true,
       totalAmount: true,
       status: true,
       expiresAt: true,
+      qrCodeUrl: true,
 
       event: {
         select: {
