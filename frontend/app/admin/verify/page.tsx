@@ -29,20 +29,9 @@ export default function VerifyPage() {
   const [ref, setRef] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<Result>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const scannerRef = useRef<{ stop: () => Promise<void> } | null>(null);
   const scannerStarted = useRef(false);
   const scannerRunning = useRef(false);
-
-  if (user && user.role !== "ADMIN") {
-    return (
-      <div className="text-center py-24">
-        <p className="text-red-400 text-lg font-semibold mb-2">Access Denied</p>
-        <p className="text-zinc-400 text-sm">Admin role required to verify tickets.</p>
-        <Link href="/" className="text-indigo-400 hover:underline text-sm mt-4 block">← Go home</Link>
-      </div>
-    );
-  }
 
   const verify = async (raw: string) => {
     setLoading(true);
@@ -94,7 +83,15 @@ export default function VerifyPage() {
     return () => { stopScanner(); };
   }, [tab]);
 
-
+  if (user && user.role !== "ADMIN") {
+    return (
+      <div className="text-center py-24">
+        <p className="text-red-400 text-lg font-semibold mb-2">Access Denied</p>
+        <p className="text-zinc-400 text-sm">Admin role required to verify tickets.</p>
+        <Link href="/" className="text-indigo-400 hover:underline text-sm mt-4 block">← Go home</Link>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-lg mx-auto">
