@@ -1,17 +1,29 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuthStore } from "@/store/auth.store";
 import { logoutApi } from "@/lib/queries";
 import { toast } from "sonner";
-import { Ticket, Calendar, User, LogOut, ShieldCheck, Menu, X } from "lucide-react";
-import { useState } from "react";
+import { Ticket, Calendar, Search, User, LogOut, ShieldCheck, Menu, X } from "lucide-react";
+import { useState, useEffect } from "react";
 
 export default function Navbar() {
   const { user, setUser } = useAuthStore();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(searchParams.get("search") ?? "");
+
+  useEffect(() => {
+    setSearchQuery(searchParams.get("search") ?? "");
+  }, [searchParams]);
+
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    const q = value.trim();
+    router.replace(q ? `/?search=${encodeURIComponent(q)}` : "/");
+  };
 
   const handleLogout = async () => {
     try {
@@ -26,7 +38,7 @@ export default function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 border-b border-white/10 bg-[#0f0f14]/80 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+      <div className="mx-auto flex max-w-6xl items-center justify-between py-3">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 group">
           <div className="rounded-lg bg-gradient-to-br from-indigo-500 to-violet-500 p-1.5 shadow-lg shadow-indigo-500/20">
@@ -36,6 +48,20 @@ export default function Navbar() {
             InstantBook
           </span>
         </Link>
+
+        {/* Search Bar */}
+        <div className="hidden md:flex items-center flex-1 max-w-xs mx-6">
+          <div className="relative w-full">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-500" />
+            <input
+              type="text"
+              placeholder="Search events..."
+              value={searchQuery}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              className="w-full rounded-lg border border-white/10 bg-white/5 pl-9 pr-4 py-1.5 text-sm text-zinc-200 placeholder-zinc-500 outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/30 transition-all"
+            />
+          </div>
+        </div>
 
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-6">
@@ -97,6 +123,17 @@ export default function Navbar() {
       {/* Mobile dropdown */}
       {menuOpen && (
         <div className="md:hidden border-t border-white/10 bg-[#0f0f14] px-4 py-4 flex flex-col gap-4">
+          {/* Mobile Search */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-500" />
+            <input
+              type="text"
+              placeholder="Search events..."
+              value={searchQuery}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              className="w-full rounded-lg border border-white/10 bg-white/5 pl-9 pr-4 py-2 text-sm text-zinc-200 placeholder-zinc-500 outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/30 transition-all"
+            />
+          </div>
           <Link href="/" onClick={() => setMenuOpen(false)} className="text-sm text-zinc-300">Events</Link>
           {user && <Link href="/bookings" onClick={() => setMenuOpen(false)} className="text-sm text-zinc-300">My Bookings</Link>}
           {user?.role === "ADMIN" && (

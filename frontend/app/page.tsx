@@ -7,9 +7,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { Calendar, MapPin, Tag, Ticket } from "lucide-react";
 import { formatDate } from "@/lib/utils";
-import { useState } from "react";
-
-const CATEGORIES = ["All", "Music", "Sports", "Theatre", "Comedy", "Tech", "Other"];
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 
 function EventCard({ event }: { event: Event }) {
   return (
@@ -52,10 +51,24 @@ function EventCard({ event }: { event: Event }) {
 }
 
 export default function HomePage() {
-  const [category, setCategory] = useState("All");
+  return (
+    <Suspense>
+      <HomePageContent />
+    </Suspense>
+  );
+}
+
+function HomePageContent() {
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get("search")?.toLowerCase() ?? "";
+
   const { data: events = [], isLoading } = useQuery({ queryKey: ["events"], queryFn: fetchEvents });
 
-  const filtered = category === "All" ? events : events.filter(e => e.category === category);
+  const filtered = events.filter(e =>
+    !searchQuery ||
+    e.title.toLowerCase().includes(searchQuery) ||
+    e.category?.toLowerCase().includes(searchQuery)
+  );
 
   return (
     <div>
@@ -72,22 +85,6 @@ export default function HomePage() {
         </p>
       </div>
 
-      {/* Category filter */}
-      <div className="flex gap-2 flex-wrap justify-center mb-8">
-        {CATEGORIES.map(cat => (
-          <button
-            key={cat}
-            onClick={() => setCategory(cat)}
-            className={`rounded-full px-4 py-1.5 text-sm font-medium border transition-all ${
-              category === cat
-                ? "bg-indigo-500 border-indigo-500 text-white shadow-lg shadow-indigo-500/20"
-                : "border-white/10 text-zinc-400 hover:border-indigo-500/40 hover:text-white"
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
 
       {/* Events grid */}
       {isLoading ? (
@@ -99,7 +96,7 @@ export default function HomePage() {
       ) : filtered.length === 0 ? (
         <div className="text-center py-24 text-zinc-500">
           <Ticket className="h-12 w-12 mx-auto mb-4 opacity-30" />
-          <p>No events found for this category.</p>
+          <p>{searchQuery ? `No events found for "${searchQuery}".` : "No events found for this category."}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
