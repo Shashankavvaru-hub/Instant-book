@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Loader2, PlusCircle } from "lucide-react";
 import { useAuthStore } from "@/store/auth.store";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function CreateEventPage() {
   const { user } = useAuthStore();
@@ -52,8 +53,11 @@ export default function CreateEventPage() {
       });
       toast.success("Event created successfully!");
       router.push("/");
-    } catch (err: any) {
-      toast.error(err?.response?.data?.message || "Failed to create event");
+    } catch (err: unknown) {
+      const msg = err && typeof err === "object" && "response" in err
+        ? (err as { response?: { data?: { message?: string } } }).response?.data?.message
+        : undefined;
+      toast.error(msg || "Failed to create event");
     } finally {
       setLoading(false);
     }
@@ -77,7 +81,9 @@ export default function CreateEventPage() {
             onClick={() => document.getElementById("img-input")?.click()}
           >
             {preview ? (
-              <img src={preview} alt="preview" className="mx-auto h-40 object-cover rounded-lg" />
+              <div className="relative mx-auto h-40 w-full">
+                <Image src={preview} alt="preview" fill unoptimized className="object-cover rounded-lg" />
+              </div>
             ) : (
               <div className="text-zinc-500 text-sm">
                 <p className="text-2xl mb-2">🖼️</p>

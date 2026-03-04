@@ -22,8 +22,11 @@ export default function SignupPage() {
       setUser(user);
       toast.success(`Account created! Welcome, ${user.firstName}!`);
       router.push("/");
-    } catch (err: any) {
-      toast.error(err?.response?.data?.message || "Signup failed. Please try again.");
+    } catch (err: unknown) {
+      const msg = err && typeof err === "object" && "response" in err
+        ? (err as { response?: { data?: { message?: string } } }).response?.data?.message
+        : undefined;
+      toast.error(msg || "Signup failed. Please try again.");
     } finally {
       setLoading(false);
     }

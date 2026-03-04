@@ -6,6 +6,7 @@ import { Booking } from "@/types";
 import Link from "next/link";
 import { Ticket, Calendar, ArrowRight } from "lucide-react";
 import { formatDate, formatCurrency, statusColor } from "@/lib/utils";
+import Image from "next/image";
 
 function BookingCard({ booking }: { booking: Booking }) {
   const seats = booking.bookingSeats
@@ -18,9 +19,12 @@ function BookingCard({ booking }: { booking: Booking }) {
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-4">
             {booking.event.imageUrl ? (
-              <img
+              <Image
                 src={booking.event.imageUrl}
                 alt={booking.event.title}
+                width={56}
+                height={56}
+                unoptimized
                 className="h-14 w-14 rounded-xl object-cover shrink-0"
               />
             ) : (

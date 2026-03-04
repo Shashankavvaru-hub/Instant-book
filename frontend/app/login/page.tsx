@@ -22,8 +22,11 @@ export default function LoginPage() {
       setUser(user);
       toast.success(`Welcome back, ${user.firstName}!`);
       router.push("/");
-    } catch (err: any) {
-      toast.error(err?.response?.data?.message || "Invalid credentials");
+    } catch (err: unknown) {
+      const msg = err && typeof err === "object" && "response" in err
+        ? (err as { response?: { data?: { message?: string } } }).response?.data?.message
+        : undefined;
+      toast.error(msg || "Invalid credentials");
     } finally {
       setLoading(false);
     }

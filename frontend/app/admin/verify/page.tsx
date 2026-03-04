@@ -29,7 +29,8 @@ export default function VerifyPage() {
   const [ref, setRef] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<Result>(null);
-  const scannerRef = useRef<any>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const scannerRef = useRef<{ stop: () => Promise<void> } | null>(null);
   const scannerStarted = useRef(false);
   const scannerRunning = useRef(false);
 
@@ -50,8 +51,11 @@ export default function VerifyPage() {
       setResult(data);
       if (data.valid) toast.success("Valid ticket — entry approved!");
       else toast.warning("Ticket is not valid");
-    } catch (err: any) {
-      setResult({ valid: false, reason: err?.response?.data?.message || "Not found" });
+    } catch (err: unknown) { // Fixed type
+      const msg = err && typeof err === "object" && "response" in err
+        ? (err as { response?: { data?: { message?: string } } }).response?.data?.message
+        : undefined;
+      setResult({ valid: false, reason: msg || "Not found" });
       toast.error("Verification failed");
     } finally {
       setLoading(false);
@@ -61,7 +65,7 @@ export default function VerifyPage() {
   const stopScanner = async () => {
     if (scannerRunning.current && scannerRef.current) {
       scannerRunning.current = false;
-      try { await scannerRef.current.stop(); } catch (_) {}
+      try { await scannerRef.current.stop(); } catch { /* ignore */ }
     }
   };
 
@@ -89,6 +93,8 @@ export default function VerifyPage() {
 
     return () => { stopScanner(); };
   }, [tab]);
+
+
 
   return (
     <div className="max-w-lg mx-auto">

@@ -1,18 +1,18 @@
 "use client";
 
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { fetchEventById, fetchEventSeats, holdSeats, createPayment } from "@/lib/queries";
 import { useParams, useRouter } from "next/navigation";
 import { EventSeat } from "@/types";
 import { formatDate } from "@/lib/utils";
 import { toast } from "sonner";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Calendar, Clock, Loader2, Ticket, Globe } from "lucide-react";
 import { useAuthStore } from "@/store/auth.store";
 import Image from "next/image";
 
 declare global {
-  interface Window { Razorpay: any; }
+  interface Window { Razorpay: { new(options: Record<string, unknown>): { open(): void } } }
 }
 
 function SeatButton({ seat, selected, onClick }: {
@@ -105,8 +105,11 @@ export default function EventDetailPage() {
         modal: { ondismiss: () => setPaying(false) },
       });
       rzp.open();
-    } catch (err: any) {
-      toast.error(err?.response?.data?.message || err?.message || "Booking failed");
+    } catch (err: unknown) {
+      const msg = err && typeof err === "object" && "response" in err
+        ? (err as { response?: { data?: { message?: string } } }).response?.data?.message
+        : err instanceof Error ? err.message : undefined;
+      toast.error(msg || "Booking failed");
       setPaying(false);
     }
   };

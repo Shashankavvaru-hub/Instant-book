@@ -5,12 +5,13 @@ import { fetchBookingById, cancelBooking } from "@/lib/queries";
 import { useParams, useRouter } from "next/navigation";
 import { formatDate, formatCurrency, statusColor } from "@/lib/utils";
 import { toast } from "sonner";
-import { ArrowLeft, Calendar, Ticket, Loader2, XCircle } from "lucide-react";
+import { ArrowLeft, Calendar, Loader2, XCircle } from "lucide-react";
 import Link from "next/link";
 import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
+import Image from "next/image";
 
 export default function BookingDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -31,7 +32,12 @@ export default function BookingDetailPage() {
       setOpen(false);
       router.push("/bookings");
     },
-    onError: (err: any) => toast.error(err?.response?.data?.message || "Failed to cancel booking"),
+    onError: (err: unknown) => {
+      const msg = err && typeof err === "object" && "response" in err
+        ? (err as { response?: { data?: { message?: string } } }).response?.data?.message
+        : undefined;
+      toast.error(msg || "Failed to cancel booking");
+    },
   });
 
   const seats = booking?.bookingSeats.map(
@@ -77,10 +83,13 @@ export default function BookingDetailPage() {
         {isConfirmed && booking.qrCodeUrl && (
           <div className="flex flex-col items-center py-4 border border-white/10 rounded-2xl bg-white/[0.03]">
             <p className="text-xs text-zinc-400 mb-3 uppercase tracking-widest font-medium">Your Entry QR Code</p>
-            <img
+            <Image
               src={booking.qrCodeUrl}
               alt="QR Code"
-              className="h-44 w-44 rounded-xl border border-white/10"
+              width={176}
+              height={176}
+              unoptimized
+              className="rounded-xl border border-white/10"
             />
             <p className="text-xs text-zinc-500 mt-3">Show this at the venue entrance</p>
           </div>

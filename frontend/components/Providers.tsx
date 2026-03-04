@@ -1,7 +1,7 @@
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { fetchMe } from "@/lib/queries";
 import { useAuthStore } from "@/store/auth.store";
 

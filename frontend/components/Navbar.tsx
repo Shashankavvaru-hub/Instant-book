@@ -6,21 +6,16 @@ import { useAuthStore } from "@/store/auth.store";
 import { logoutApi } from "@/lib/queries";
 import { toast } from "sonner";
 import { Ticket, Calendar, Search, User, LogOut, ShieldCheck, Menu, X } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 export default function Navbar() {
   const { user, setUser } = useAuthStore();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState(searchParams.get("search") ?? "");
-
-  useEffect(() => {
-    setSearchQuery(searchParams.get("search") ?? "");
-  }, [searchParams]);
+  const searchQuery = searchParams.get("search") ?? "";
 
   const handleSearchChange = (value: string) => {
-    setSearchQuery(value);
     const q = value.trim();
     router.replace(q ? `/?search=${encodeURIComponent(q)}` : "/");
   };
