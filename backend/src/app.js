@@ -3,6 +3,7 @@ dotenv.config();
 import express, { json } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -18,6 +19,9 @@ const __dirname = path.dirname(__filename);
 
 
 const app = express();
+
+// HTTP Request Logging
+app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
 
 // CORS
 app.use(
