@@ -6,7 +6,10 @@ WORKDIR /app
 # Copy dependency files first for better layer caching
 COPY package*.json ./
 
-# Install all dependencies (including dev)
+# Copy prisma schema BEFORE npm install (postinstall runs prisma generate)
+COPY prisma ./prisma
+
+# Install all dependencies (triggers prisma generate via postinstall)
 RUN npm install
 
 # Copy the rest of the source code
