@@ -1,5 +1,5 @@
 # ---- Stage 1: Build ----
-FROM node:24-alpine AS builder
+FROM node:24-slim AS builder
 
 WORKDIR /app
 
@@ -9,14 +9,14 @@ COPY package*.json ./
 # Copy prisma schema BEFORE npm install (postinstall runs prisma generate)
 COPY prisma ./prisma
 
-# Install all dependencies (triggers prisma generate via postinstall)
+# Install dependencies + run prisma generate via postinstall
 RUN npm install
 
 # Copy the rest of the source code
 COPY . .
 
 # ---- Stage 2: Production ----
-FROM node:24-alpine
+FROM node:24-slim
 
 WORKDIR /app
 
@@ -28,7 +28,7 @@ COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/prisma.config.js ./
 
 # Expose the backend port
-EXPOSE 5000
+EXPOSE 4000
 
-# Run Prisma generate then start the server
+# Start the server
 CMD ["node", "src/index.js"]
