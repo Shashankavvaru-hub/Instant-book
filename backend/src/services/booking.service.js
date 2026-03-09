@@ -1,8 +1,6 @@
-import { BookingStatus } from "@prisma/client";
 import { redis } from "../config/redis.js";
 import { AppError } from "../utils/AppError.js";
 import { prisma } from "../config/prisma.js";
-import { uuidv4 } from "zod";
 import { randomUUID } from "crypto";
 import { razorpay } from "../config/razorpay.js";
 
