@@ -1,10 +1,12 @@
 import { catchAsync } from "../utils/catchAsync.js";
 import { signupService, loginService } from "../services/auth.service.js";
 
+const isProduction = process.env.NODE_ENV === "production";
+
 const cookieOptions = {
   httpOnly: true,
-  sameSite: "strict",
-  secure: process.env.NODE_ENV === "production",
+  sameSite: isProduction ? "none" : "lax",
+  secure: isProduction,
   maxAge: 7 * 24 * 60 * 60 * 1000,
 };
 
