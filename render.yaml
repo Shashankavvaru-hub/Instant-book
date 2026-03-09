@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: instantbook-backend
+    runtime: node
+    rootDir: backend
+    buildCommand: apt-get install -y openssl && npm install
+    startCommand: node src/index.js
+    envVars:
+      - key: NODE_ENV
+        value: production
