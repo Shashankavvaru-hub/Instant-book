@@ -28,7 +28,7 @@ app.use(
   cors(
     process.env.ALLOWED_ORIGINS
       ? {
-          origin: process.env.ALLOWED_ORIGINS.split(","),
+          origin: process.env.ALLOWED_ORIGINS.split(",").map(o => o.trim()),
           credentials: true,
         }
       : {
