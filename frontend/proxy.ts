@@ -19,7 +19,9 @@ function isValidToken(token: string | undefined): boolean {
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const token = request.cookies.get("token")?.value;
+  console.log("token : ", token);
   const loggedIn = isValidToken(token);
+  console.log("loggedIn : ", loggedIn);
 
   // Redirect logged-in users away from auth pages
   if (loggedIn && authPaths.some((p) => pathname.startsWith(p))) {
