@@ -3,12 +3,20 @@ import { signupService, loginService } from "../services/auth.service.js";
 
 const isProduction = process.env.NODE_ENV === "production";
 
-const cookieOptions = {
+// const cookieOptions = {
+//   httpOnly: true,
+//   sameSite: isProduction ? "none" : "lax",
+//   secure: isProduction,
+//   maxAge: 7 * 24 * 60 * 60 * 1000,
+// };
+
+res.cookie("token", token, {
   httpOnly: true,
-  sameSite: isProduction ? "none" : "lax",
-  secure: isProduction,
-  maxAge: 7 * 24 * 60 * 60 * 1000,
-};
+  secure: true,
+  sameSite: "none",
+  path: "/",
+  maxAge: 7 * 24 * 60 * 60 * 1000
+});
 
 export const signup = catchAsync(async (req, res) => {
   const result = await signupService(req.body);
