@@ -10,13 +10,13 @@ const isProduction = process.env.NODE_ENV === "production";
 //   maxAge: 7 * 24 * 60 * 60 * 1000,
 // };
 
-res.cookie("token", token, {
+const cookieOptions = {
   httpOnly: true,
   secure: true,
   sameSite: "none",
   path: "/",
   maxAge: 7 * 24 * 60 * 60 * 1000
-});
+};
 
 export const signup = catchAsync(async (req, res) => {
   const result = await signupService(req.body);
