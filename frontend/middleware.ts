@@ -16,7 +16,7 @@ function isValidToken(token: string | undefined): boolean {
   }
 }
 
-export function proxy(request: NextRequest) {
+export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const token = request.cookies.get("token")?.value;
   console.log("token : ", token);
