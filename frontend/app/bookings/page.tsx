@@ -7,6 +7,7 @@ import Link from "next/link";
 import { Ticket, Calendar, ArrowRight } from "lucide-react";
 import { formatDate, formatCurrency, statusColor } from "@/lib/utils";
 import Image from "next/image";
+import { useRequireAuth } from "@/lib/useRequireAuth";
 
 function BookingCard({ booking }: { booking: Booking }) {
   const seats = booking.bookingSeats
@@ -56,10 +57,20 @@ function BookingCard({ booking }: { booking: Booking }) {
 }
 
 export default function BookingsPage() {
+  const { isLoading: authLoading } = useRequireAuth();
+
   const { data: bookings = [], isLoading } = useQuery({
     queryKey: ["my-bookings"],
     queryFn: fetchMyBookings,
   });
+
+  if (authLoading) {
+    return (
+      <div className="flex items-center justify-center py-24">
+        <div className="h-8 w-8 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-2xl mx-auto">

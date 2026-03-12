@@ -1,46 +1,15 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const protectedPaths = ["/bookings"];
-const adminPaths = ["/admin"];
-const authPaths = ["/login", "/signup"];
-
-/** Returns true only if the token exists and hasn't expired yet. */
-function isValidToken(token: string | undefined): boolean {
-  if (!token) return false;
-  try {
-    const payload = JSON.parse(atob(token.split(".")[1]));
-    return typeof payload.exp === "number" && payload.exp * 1000 > Date.now();
-  } catch {
-    return false;
-  }
-}
-
+// NOTE: The auth token cookie is set by the backend (onrender.com domain).
+// Next.js middleware runs on the Vercel domain — it can never read a cookie
+// from a different domain. Route protection is handled client-side via
+// useRequireAuth() in each protected page.
 export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
-  const token = request.cookies.get("token")?.value;
-  console.log("token : ", token);
-  const loggedIn = isValidToken(token);
-  console.log("loggedIn : ", loggedIn);
-
-  // Redirect logged-in users away from auth pages
-  if (loggedIn && authPaths.some((p) => pathname.startsWith(p))) {
-    return NextResponse.redirect(new URL("/", request.url));
-  }
-
-  // Protect user routes
-  if (!loggedIn && protectedPaths.some((p) => pathname.startsWith(p))) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-
-  // Admin routes — role check happens on the page (no role in cookie)
-  if (!loggedIn && adminPaths.some((p) => pathname.startsWith(p))) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-
   return NextResponse.next();
 }
 
 export const config = {
   matcher: ["/bookings/:path*", "/admin/:path*", "/login", "/signup"],
 };
+

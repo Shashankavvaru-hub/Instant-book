@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { formatDate } from "@/lib/utils";
 import { ScanLine, Keyboard, CheckCircle2, XCircle, AlertCircle, Loader2 } from "lucide-react";
 import { useAuthStore } from "@/store/auth.store";
+import { useRequireAuth } from "@/lib/useRequireAuth";
 import Link from "next/link";
 
 type Result = {
@@ -25,6 +26,7 @@ type Result = {
 
 export default function VerifyPage() {
   const { user } = useAuthStore();
+  const { isLoading: authLoading } = useRequireAuth();
   const [tab, setTab] = useState<"scan" | "manual">("manual");
   const [ref, setRef] = useState("");
   const [loading, setLoading] = useState(false);
@@ -82,6 +84,14 @@ export default function VerifyPage() {
 
     return () => { stopScanner(); };
   }, [tab]);
+
+  if (authLoading) {
+    return (
+      <div className="flex items-center justify-center py-24">
+        <div className="h-8 w-8 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin" />
+      </div>
+    );
+  }
 
   if (user && user.role !== "ADMIN") {
     return (
