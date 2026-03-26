@@ -21,18 +21,21 @@ function SeatButton({ seat, selected, onClick }: {
   onClick: () => void;
 }) {
   const isBooked = seat.status === "BOOKED";
+  const isLocked = seat.status === "LOCKED";
   return (
     <button
       onClick={onClick}
-      disabled={isBooked}
+      disabled={isBooked || isLocked}
       title={`${seat.seat.row}${seat.seat.number}`}
       className={`
         h-9 w-9 rounded-lg text-xs font-bold transition-all border
         ${isBooked
           ? "bg-red-500/20 border-red-500/30 text-red-400/50 cursor-not-allowed"
-          : selected
-            ? "bg-indigo-500 border-indigo-400 text-white shadow-lg shadow-indigo-500/30 scale-110"
-            : "bg-white/5 border-white/10 text-zinc-300 hover:bg-indigo-500/20 hover:border-indigo-500/40 hover:text-indigo-300"
+          : isLocked
+            ? "bg-amber-500/20 border-amber-500/30 text-amber-400/50 cursor-not-allowed"
+            : selected
+              ? "bg-indigo-500 border-indigo-400 text-white shadow-lg shadow-indigo-500/30 scale-110"
+              : "bg-white/5 border-white/10 text-zinc-300 hover:bg-indigo-500/20 hover:border-indigo-500/40 hover:text-indigo-300"
         }
       `}
     >
@@ -162,6 +165,7 @@ export default function EventDetailPage() {
         <div className="flex gap-4 mb-6 text-xs text-zinc-400">
           <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded bg-white/5 border border-white/10" /> Available</span>
           <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded bg-indigo-500 border border-indigo-400" /> Selected</span>
+          <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded bg-amber-500/20 border border-amber-500/30" /> Locked</span>
           <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded bg-red-500/20 border border-red-500/30" /> Booked</span>
         </div>
 

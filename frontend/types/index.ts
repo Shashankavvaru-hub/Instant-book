@@ -24,7 +24,7 @@ export interface Event {
 
 export interface EventSeat {
   id: number;
-  status: "AVAILABLE" | "BOOKED";
+  status: "AVAILABLE" | "LOCKED" | "BOOKED";
   seat: {
     id: number;
     row: string;

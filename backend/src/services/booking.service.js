@@ -100,11 +100,11 @@ export const createBooking = async (eventId, eventSeatIds, userId) => {
         })),
       });
 
-      // Mark seats as BOOKED so they are unavailable to others
-      await tx.eventSeat.updateMany({
-        where: { id: { in: eventSeatIds } },
-        data: { status: "BOOKED" },
-      });
+        // Mark seats as LOCKED while booking is PENDING
+        await tx.eventSeat.updateMany({
+          where: { id: { in: eventSeatIds } },
+          data: { status: "LOCKED" },
+        });
 
       console.log(newBooking);
       return newBooking;

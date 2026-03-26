@@ -103,7 +103,12 @@ export const finalizeBooking = async (gatewayOrderId, gatewayPaymentId) => {
 
     const seatIds = booking.bookingSeats.map((bs) => bs.eventSeatId);
 
-    // Seats are already BOOKED from hold time — just confirm the booking
+    // Move status from LOCKED to BOOKED
+    await tx.eventSeat.updateMany({
+      where: { id: { in: seatIds } },
+      data: { status: "BOOKED" },
+    });
+
     await tx.booking.update({
       where: { id: booking.id },
       data: { status: "CONFIRMED" },
