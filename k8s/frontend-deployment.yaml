@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: instantbook-frontend
+  labels:
+    app: instantbook-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: instantbook-frontend
+  template:
+    metadata:
+      labels:
+        app: instantbook-frontend
+    spec:
+      containers:
+        - name: frontend
+          # Replace YOUR_DOCKERHUB_USERNAME with your actual Docker Hub username
+          image: avvarushashank/instantbook-frontend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          env:
+            # Points frontend to the backend service inside the cluster
+            - name: NEXT_PUBLIC_API_URL
+              value: "http://instantbook-backend:4000"
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 10

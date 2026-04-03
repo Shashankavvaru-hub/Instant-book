@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: instantbook-backend
+  labels:
+    app: instantbook-backend
+spec:
+  selector:
+    app: instantbook-backend
+  type: NodePort
+  ports:
+    - name: http
+      protocol: TCP
+      port: 4000        # ClusterIP port (internal)
+      targetPort: 4000  # Container port
+      nodePort: 30001   # External port via minikube ip

@@ -1,0 +1,612 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage[top=1in, bottom=1in, left=1.5in, right=1.1in]{geometry}
+
+\usepackage{times}
+\usepackage{setspace}
+\usepackage{titlesec}
+\usepackage{tocloft}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{fancyhdr}
+\usepackage{etoolbox}
+\usepackage{url}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\setmainfont{Times New Roman}
+\setmonofont{DejaVu Sans Mono}
+
+% Set line spacing
+\onehalfspacing
+
+% Configure page numbering
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+
+% For preliminary pages (roman numerals)
+\fancypagestyle{preliminary}{
+    \fancyhf{}
+    \cfoot{\thepage}
+    \renewcommand{\headrulewidth}{0pt}
+}
+
+% For main content (arabic numerals)
+\fancypagestyle{main}{
+    \fancyhf{}
+    \cfoot{\thepage}
+    \renewcommand{\headrulewidth}{0pt}
+}
+
+% Title formatting
+\titleformat{\chapter}[display]
+{\normalfont\huge\bfseries\centering}{\chaptertitlename\ \thechapter}{0.1pt}{\LARGE}
+
+\titleformat{\section}
+{\normalfont\bfseries\MakeUppercase}{\thesection}{1em}{}
+\titleformat{\subsection}
+{\normalfont\bfseries}{\thesubsection}{1em}{}
+
+% Section spacing
+\titlespacing*{\chapter}{0pt}{-30pt}{20pt}
+\titlespacing*{\section}{0pt}{12pt}{6pt}
+\titlespacing*{\subsection}{0pt}{12pt}{6pt}
+
+% Paragraph formatting
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{12pt}
+
+% === Border on every page (safe version) ===
+\usepackage{tikz}
+\usepackage{eso-pic}
+
+\makeatletter
+\AddToShipoutPictureBG{%
+  \AtPageLowerLeft{%
+    \begin{tikzpicture}[remember picture, overlay]
+      % Left margin = 1.5in, right/top/bottom = 1in
+      \draw[line width=1pt, color=black]
+        ([xshift=1.3in,yshift=0.9in]current page.south west)
+        rectangle
+        ([xshift=-0.9in,yshift=-0.9in]current page.north east);
+    \end{tikzpicture}%
+  }
+}
+\makeatother
+
+\begin{document}
+
+% Preliminary pages with roman numerals
+\pagenumbering{roman}
+\pagestyle{preliminary}
+
+% Page-1 { Top Page (Annex-1)` }
+\begin{center}
+{\fontsize{18}{27}\bfseries INSTANTBOOK\\}
+
+{\fontsize{14}{21}\bfseries A MINI PROJECT REPORT\\}
+\vspace{0.7cm}
+
+{\fontsize{14}{21}\itshape Submitted by\\}
+\vspace{0.3cm}
+
+{\fontsize{14}{21}\bfseries Kokkula Bhavith Kumar(B210662)\\}
+{\fontsize{14}{21}\bfseries Pagidipala Hanuman(B210843)\\}
+{\fontsize{14}{21}\bfseries Amaravadi Sanjay(B211483)\\}
+\vspace{1cm}
+
+{\fontsize{16}{24}\bfseries Of\\}
+{\fontsize{16}{24}\bfseries Bachelor of Technology\\}
+\vspace{1cm}
+
+{\fontsize{12}{21}\textbf{\textit{Under the guidance of}}}
+
+{\fontsize{14}{21}\bfseries Mrs.Pullaiahgari Sarika, Asst. Prof\\}
+\vspace{1cm}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\textwidth]{LOGO.jpg} 
+    \label{fig:logo}
+\end{figure}
+
+{\fontsize{14}{16.8}\bfseries DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING\\
+RAJIV GANDHI UNIVERSITY OF KNOWLEDGE TECHNOLOGIES\\
+BASAR, NIRMAL (DIST.),\\
+TELANGANA - 504107\\}
+
+\end{center}
+\clearpage
+
+% Page-2 {Cover Page (Annex-2)}
+\begin{center}
+{\fontsize{16}{24}\bfseries INSTANTBOOK\\}
+\vspace{1cm}
+
+{\fontsize{12}{18}\bfseries\itshape Project Report submitted to\\
+Rajiv Gandhi University of Knowledge Technologies, Basar\\
+for the partial fulfillment of the requirements\\
+for the award of the degree of\\}
+\vspace{1cm}
+
+{\fontsize{14}{21}\bfseries Bachelor of Technology\\
+in\\
+Computer Science \& Engineering\\}
+\vspace{0.5cm}
+
+{\fontsize{12}{18}\bfseries\itshape by\\}
+\vspace{0.5cm}
+
+{\fontsize{12}{18}\bfseries\itshape Kokkula Bhavith Kumar(B210662)}\\
+{\fontsize{12}{18}\bfseries\itshape Pagidipala Hanuman(B210843)}\\
+{\fontsize{12}{18}\bfseries\itshape Amaravadi Sanjay(B211483)}\\
+\vspace{1cm}
+
+{\fontsize{12}{21}\bfseries Under the Guidance of\\}
+\vspace{0.5cm}
+
+{\fontsize{12}{18}\bfseries\itshape Mrs.Pullaiahgari Sarika, Asst. Prof\\}
+\vspace{1cm}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.25\textwidth]{LOGO.jpg} 
+    \label{fig:logo}
+\end{figure}
+\vspace{0.5cm}
+
+{\fontsize{14}{16.8}\bfseries DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING\\
+RAJIV GANDHI UNIVERSITY OF KNOWLEDGE TECHNOLOGIES, BASAR\\
+OCTOBER 2025\\}
+
+\end{center}
+\clearpage
+
+% Page-3 {Certificate Page (Annex-3)}
+\addcontentsline{toc}{chapter}{Certificate Page}
+\begin{center}
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.25\textwidth]{LOGO.jpg} 
+        \label{fig:logo}
+    \end{figure}
+
+{\fontsize{14}{16.8}\bfseries DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING\\RAJIV GANDHI UNIVERSITY OF KNOWLEDGE TECHNOLOGIES, BASAR\\}
+\vspace{1cm}
+
+{\fontsize{16}{24}\bfseries CERTIFICATE\\}
+\end{center}
+
+\vspace{0.5cm}
+
+This is to certify that the Project Report entitled \textbf{InstantBook} submitted by \textbf{Kokkula Bhavith Kumar(B210662), Pagidipala Hanuman(B210843), Amaravadi Sanjay (B211483)}, Department of Computer Science and Engineering, Rajiv Gandhi University Of Knowledge Technologies, Basar; for partial fulfillment of the requirements for the degree of Bachelor of Technology in Computer Science and Engineering; is a bonafide record of the work and investigations carried out by him/her/them under my supervision and guidance.
+
+\vspace{2.5cm}
+
+\begin{minipage}{0.45\textwidth}
+\begin{center}
+\textbf{PROJECT SUPERVISOR}\\
+\vspace{0.5cm}
+\textbf{Mrs.Pullaiahgari Sarika}\\
+\textbf{Assistant Professor}
+\end{center}
+\end{minipage}
+\hfill
+\begin{minipage}{0.45\textwidth}
+\begin{center}
+\textbf{HEAD OF DEPARTMENT}\\
+\vspace{0.5cm}
+\textbf{Dr.B.Venkat Raman}\\
+\textbf{Assistant Professor}
+\end{center}
+\end{minipage}
+
+\vspace{1.5cm}
+\begin{center}
+    \textbf{EXTERNAL EXAMINER}
+\end{center}
+
+\clearpage
+% Page-4 {Declaration Page (Annex-4)}
+\addcontentsline{toc}{chapter}{Declaration}
+
+\begin{center}
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.25\textwidth]{LOGO.jpg} 
+        \label{fig:logo}
+    \end{figure}
+
+{\fontsize{14}{16.8}\bfseries DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING\\
+RAJIV GANDHI UNIVERSITY OF KNOWLEDGE TECHNOLOGIES, BASAR\\}
+\vspace{1cm}
+
+{\fontsize{16}{24}\bfseries DECLARATION\\}
+\end{center}
+
+\vspace{1cm}
+
+We hereby declare that the work which is being presented in this project entitled, "\textbf{InstantBook}" submitted to \textbf{RAJIV GANDHI UNIVERSITY OF KNOWLEDGE TECHNOLOGIES, BASAR} in the partial fulfillment of the requirements for the award of the degree of \textbf{BACHELOR OF TECHNOLOGY} in \textbf{COMPUTER SCIENCE AND ENGINEERING}, is an authentic record of our own work carried out under the supervision of \textbf{"Mrs.Pullaiahgari Sarika"}, Assistant Professor in Department of Computer Science And Engineering, RGUKT, Basar.\\The matter embodied in this project report has not been submitted by us for the award of any other degree.
+
+\vspace{2cm}
+Place: Basar\\
+Date :
+
+\begin{flushright}
+Kokkula Bhavith Kumar(B210662)\\
+Pagidipala Hanuman(B210843)\\
+Amaravadi Sanjay(B211483)\\
+\end{flushright}
+\clearpage
+
+% Page-5 (Acknowledgements)
+\chapter*{Acknowledgement}
+\addcontentsline{toc}{chapter}{Acknowledgement}
+
+We would like to express my sincere gratitude to my advisor, \textbf{Mrs.Pullaiahgari Sarika}, whose knowledge and guidance has motivated me to achieve my goals possible. She has consistently been a source of motivation, encouragement, and inspiration. The time I have spent working under her supervision has truly been a pleasure.
+
+\vspace{0.5cm}
+
+I thank HOD \textbf{Dr.B.Venkat Raman} for his effort and guidance and all senior faculty members of the CSE Department for their help during my course. Thanks to programmers and non-teaching staff of the CSE Department.
+
+\vspace{0.5cm}
+
+We would like to express my sincere gratitude to my Project Co-ordinator \textbf{Mrs.B. Latha Reddy}, whose knowledge and guidance has motivated me to achieve goals I never thought possible. She has consistently been a source of motivation, encouragement, and inspiration. The time I have spent working under his supervision has truly been a pleasure.
+
+\vspace{0.5cm}
+
+I thank my Vice-Chancellor,\textbf{ Prof. A. Govardhan}, and Management for providing excellent facilities to carry out my project work.
+
+\vspace{0.5cm}
+
+Finally, special thanks to my parents for their support and encouragement throughout my life and this course. Thanks to all my friends and well-wishers for their constant support.
+
+\vspace{1cm}
+
+\begin{flushright}
+\textbf{Kokkula Bhavith Kumar(B210662)}\\
+\textbf{Pagidipala Hanuman(B210843)}\\
+\textbf{Amaravadi Sanjay(B211483)}
+\end{flushright}
+\clearpage
+
+% Abstract
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+\noindent
+In today's digital era, booking event tickets seamlessly and securely is a growing challenge due to high user traffic, concurrent bookings leading to double-booking errors, and unoptimized mobile experiences. \textbf{InstantBook} is a comprehensive web application and Progressive Web App (PWA) designed to streamline the entire lifecycle of event ticket booking through real-time state synchronization, an intuitive seat selection UI, and secure payment processing.
+
+InstantBook enables two major user roles—\textit{Administrator and User}—to operate within a unified environment. The platform allows administrators to create events, manage large seating layouts (such as interactive 15-row by 25-column seat maps), and easily verify ticket validity. Users can instantly browse available events, view live seat availability with granular "Locked" and "Booked" statuses, complete frictionless payments via Razorpay integration, and receive QR-coded digital tickets directly to their email and PWA dashboards. 
+
+The system relies on a modern, robust technology stack. The frontend is built using \textbf{Next.js 16, React, and Tailwind CSS}, offering a highly responsive, dynamic, and native-like PWA user experience. The backend services utilize \textbf{Node.js, Express.js, PostgreSQL coupled with the Prisma ORM}, and \textbf{Upstash Redis} for handling high-concurrency real-time seat locking algorithms. Additional integrations include \textbf{Resend} for automated email notifications and \textbf{HTML5 QR Code} for rapid ticket verification by event staff.
+
+InstantBook successfully addresses major ticketing pain points—eliminating double bookings through real-time distributed locking, improving mobile accessibility via PWA capabilities, and providing a premium, transparent booking experience. By combining modern modular architecture with seamless third-party gateways, this project demonstrates a highly scalable and resilient approach to digital event management and ticketing.
+
+\clearpage
+
+% Table of Contents
+\tableofcontents
+\clearpage
+
+% List of Figures
+\listoffigures
+\addcontentsline{toc}{chapter}{List of Figures}
+\clearpage
+
+% List of Abbreviations and Symbols Used
+\chapter*{List of Abbreviations and Symbols Used}
+\addcontentsline{toc}{chapter}{List of Abbreviations and Symbols Used}
+
+\begin{tabular}{p{3cm}p{10cm}}
+\textbf{API} & Application Programming Interface\\
+\textbf{PWA} & Progressive Web App\\
+\textbf{JWT} & JSON Web Token\\
+\textbf{UI/UX} & User Interface / User Experience\\
+\textbf{DB} & Database\\
+\textbf{HTTP} & HyperText Transfer Protocol\\
+\textbf{HTTPS} & HyperText Transfer Protocol Secure\\
+\textbf{REST} & Representational State Transfer\\
+\textbf{ORM} & Object-Relational Mapping\\
+\textbf{SQL} & Structured Query Language\\
+\textbf{SSR} & Server-Side Rendering\\
+\textbf{JSON} & JavaScript Object Notation\\
+\textbf{QR Code} & Quick Response Code\\
+\end{tabular}
+
+\clearpage
+
+% Main content starts with arabic numbering
+\pagenumbering{arabic}
+\pagestyle{main}
+
+% Chapter 1: Introduction
+\chapter{Introduction}
+\section{Introduction}
+In the fast-paced modern world, the process of discovering events and booking tickets requires speed, reliability, and accessibility. However, traditional ticketing platforms often struggle with high traffic scenarios, confusing seat layouts, and concurrency issues where multiple users accidentally book the same seat. To overcome these challenges, \textbf{InstantBook} was specifically developed as an advanced event ticket booking platform that optimizes every stage of the user journey—from event discovery to digital ticket validation at the venue.
+
+InstantBook is engineered to serve both event organizers (Administrators) and the general audience (Users). It enables administrators to effortlessly set up events, define venue capacities using an interactive seat map manager, and securely scan tickets. For the end-user, it delivers a smooth natively-installable Progressive Web App (PWA) experience, complete with an interactive live seat map, secure checkout via Razorpay, and QR code integration for purely digital, paperless entry.
+
+\section{Motivation}
+Event ticketing systems are notoriously difficult to scale effectively. One of the most prevalent challenges occurs during high-demand periods when hundreds of users view the exact same available seats simultaneously. Without an immediate real-time locking mechanism, users frequently experience checkout failures, or worse, double-booked scenarios requiring massive manual remediation. 
+
+Additionally, users expect a fluid experience on their smartphones without needing to download large native applications from app stores. Traditional web apps lack the push notifications, offline caching, and native feel of installed apps.
+
+The need to solve concurrency challenges transparently while delivering a premium mobile-first app experience strongly motivated the development of InstantBook. By utilizing in-memory databases like Redis for instantaneous seat locking, Next.js for high-performance server-side rendering, and PWA techniques for seamless installation, InstantBook aims to rival industry standards while remaining highly accessible and scalable.
+
+\section{Problem Definition}
+Currently, minor and mid-tier organizations face significant technical hurdles in ticketing:
+\begin{itemize}
+    \item \textbf{Concurrency conflicts:} Multiple users attempt to pay for the exact same seat concurrently, leading to failed transactions.
+    \item \textbf{Complex seat verification:} Traditional ticketing requires either paper printouts or insecure emailed PDFs that are tedious to verify manually.
+    \item \textbf{Poor mobile adaptation:} Users often interact with clunky responsive web designs that fail to mimic native app layouts, resulting in high drop-off rates.
+    \item \textbf{Lack of transparency:} Seat maps often fail to differentiate between "Locked" (currently in someone's cart) and simply "Available" or "Booked", creating a frustrating guessing game for users.
+\end{itemize}
+
+InstantBook was directly designed to address and eliminate these exact infrastructural and user experience bottlenecks.
+
+\section{Objective of the Project}
+The underlying objective of \textbf{InstantBook} is to provide a robust, cloud-based platform that brings enterprise-level ticketing capabilities to a broader market while prioritizing speed and reliability. The key objectives include:
+\begin{enumerate}
+    \item Implementing a \textbf{real-time seat locking mechanism} utilizing Redis to entirely eliminate double-booking overlaps.
+    \item Providing a highly interactive \textbf{15x25 grid seat map layout} using React, capable of instantly reflecting "Available", "Locked", and "Booked" statuses.
+    \item Constructing the platform as a \textbf{Progressive Web App (PWA)} to provide easy installation, app-like interactions, and faster load times.
+    \item Streamlining checkout through a secure \textbf{Razorpay API integration}.
+    \item Equipping tickets with dynamically generated \textbf{QR logic} and building a robust validation gateway for fast venue check-ins.
+    \item Establishing a modern backend backbone via \textbf{Express.js, PostgreSQL}, and the \textbf{Prisma ORM} for maximum structural integrity.
+\end{enumerate}
+
+\chapter{Analysis}
+
+\section{User Requirement Analysis}
+
+InstantBook is conceptualized to support dynamic ticketing environments. To clearly define the scope and architecture, assessing the system through detailed \textbf{functional} and \textbf{non-functional} requirements is essential.
+
+\subsection{Functional Requirements}
+
+\subsubsection*{1. Administrator Requirements}
+\begin{itemize}
+    \item Admin role must execute secure portal access via JWT authentication.
+    \item Interface to create new events, uploading banners via Cloudinary, and setting date/time logic.
+    \item Interactive tools to configure seat availability limits and map capacities (e.g., standardizing a 15x25 array).
+    \item Ability to utilize an integrated HTML5 QR scanning interface to actively validate user tickets at the physical venue.
+    \item Track live booking metrics and revenue summaries.
+\end{itemize}
+
+\subsubsection*{2. User (Audience) Requirements}
+\begin{itemize}
+    \item Users should register and authenticate properly, allowing secure history tracking.
+    \item Browse global or local active events comprehensively.
+    \item Select exact assigned seats utilizing a visual 2D interactive UI (e.g., matrix grid).
+    \item Safely process digital transactions leveraging the Razorpay gateway.
+    \item Receive immediate email notifications containing their customized QR-encoded e-ticket using Resend architecture.
+    \item Install the PWA straight to their mobile home screen to quickly pull up e-tickets offline or on-the-go.
+\end{itemize}
+
+\subsubsection*{3. System Requirements}
+\begin{itemize}
+    \item Instantly lock a user's selected seat the moment they initiate the checkout flow (Locked Status).
+    \item Clear "Locked" states via webhooks or timeouts if a mapped payment fails or lapses.
+    \item Generate cryptographically robust QR encodings containing user and ticket IDs.
+    \item Facilitate seamless end-to-end communication via RESTful API paradigms.
+\end{itemize}
+
+\subsection{Non-Functional Requirements}
+
+\begin{itemize}
+    \item \textbf{High Concurrency (Performance):} Redis integration is vital so that concurrent seat checks occur in extremely fast memory structures, minimizing database blockages.
+    \item \textbf{Usability and Accessibility:} Next.js with Tailwind CSS ensures rapid Server-Side Rendering (SSR) along with highly polished interface styling, accommodating various screen formats naturally.
+    \item \textbf{Availability:} Deployment strategies aim strictly for 99.9\% uptime through robust cloud hosting parameters.
+    \item \textbf{Maintainability:} Implementing Prisma ORM ensures future database scaling or structural migrations are straightforward and type-safe via TypeScript implementations.
+\end{itemize}
+
+\subsection{Hardware and Software Requirements}
+
+\subsubsection*{Software Requirements}
+\begin{itemize}
+    \item \textbf{Frontend:} Next.js (React Framework), Tailwind CSS (v4), Zustand, React Query.
+    \item \textbf{Backend:} Node.js, Express.js.
+    \item \textbf{Database Layer:} PostgreSQL (Relational Database) combined with Prisma ORM.
+    \item \textbf{In-Memory Store:} Upstash Redis.
+    \item \textbf{Third-Party Logistics:} Cloudinary (Image storage), Razorpay (Financial transactions), Resend (Email SMTP), HTML5 QR Code.
+    \item \textbf{Environment:} Node v18+ ecosystem.
+\end{itemize}
+
+\chapter{System Analysis}
+
+\section{Existing System}
+
+Conventional standalone ticket booking frameworks often operate on rudimentary principles, creating a variety of technical pain points:
+\begin{itemize}
+    \item \textbf{Synchronous Database Checking:} Traditional systems check seat availability via direct relational database queries immediately prior to payment authorization. Under load, this delay allows two users to query an 'Available' seat almost simultaneously, resulting in a conflicting transaction.
+    \item \textbf{Clunky Seat Arrays:} Older applications rely heavily on HTML select inputs or non-interactive static images, leaving users confused about their physical proximity to the stage or screen.
+    \item \textbf{Disjointed Mobile Experience:} Due to budget constrictions, companies bypass native app development entirely, forcing users through standard mobile browsers which lack cache retention and direct notification support.
+    \item \textbf{Verification Friction:} Paper tickets or barcode verification mandates expensive physical scanning hardware at event entries.
+\end{itemize}
+
+\section{Proposed System}
+
+\textbf{InstantBook} comprehensively modernizes the entire workflow utilizing an edge-ready, scalable ecosystem. 
+
+\subsection*{Features of the Proposed System}
+\begin{itemize}
+    \item \textbf{Real-Time 'Locked' Seat States:} Immediately upon engaging the checkout cart, user requests pass to Upstash Redis. Redis rapidly caches the seat as 'Locked' for a fixed timer, immediately preventing all other viewers from clicking it. 
+    \item \textbf{Progressive Web App Architecture:} Built via Next.js manifested traits, the interface is readily installable to the device desktop, boasting offline caching capabilities for previously accessed e-tickets.
+    \item \textbf{Client-Side Validation and Webhooks:} Once Razorpay approves the transaction, InstantBook directly transitions the 'Locked' seat metric to a deeply verified 'Booked' metric in the PostgreSQL main database, bridging client transparency and secure server logs.
+    \item \textbf{Integrated QR Verification:} Harnessing the HTML5-QRCode module allows venue staff to securely validate complex encrypted ticket strings utilizing practically any standard smartphone camera.
+\end{itemize}
+
+\subsection*{Advantages of the Proposed System}
+\begin{itemize}
+    \item Entirely bypasses transaction-conflict issues via Redis distributed caching.
+    \item Enhances mobile user retention with frictionless PWA onboarding.
+    \item Visual, high-fidelity 15x25 interactive seat maps drastically improve the user curation process.
+    \item Significantly decreases physical overhead required for venue check-ins.
+\end{itemize}
+
+\chapter{System Design}
+
+System design details the structural layout mapping interactions between dynamic components. InstantBook operates under a decoupled Client-Server architecture wherein React elements maintain state synchronization with Express.js endpoints.
+
+\section{UML Diagrams and Workflows}
+
+Unified Modeling Language methodologies clarify relational behaviors inherent inside the platform.
+
+\subsection*{1. Use Case Diagram Context}
+The system dictates two primary boundaries:
+\begin{itemize}
+    \item \textbf{User Role:} Interfaces with Registration nodes, Seat Maps, the Razorpay Checkout flow, and Personal Ticket Dashboards.
+    \item \textbf{Admin Role:} Modulates Event Creation (Banners, Timestamps, Capacities) and Scanning Interfaces (QR validation endpoints).
+\end{itemize}
+
+\subsection*{2. Interaction Flow (Booking Sequence)}
+\begin{enumerate}
+    \item The user initiates a grid map interaction and requests "Seat G14".
+    \item The Next.js frontend deploys a highly concurrent ping to the Express API.
+    \item The API queries the Redis memory partition; if clear, Redis locks "Seat G14" with a 5-minute Time-To-Live (TTL).
+    \item The frontend updates immediately for all users globally rendering G14 in an amber 'Locked' hue.
+    \item Following a positive verification webhook string from Razorpay, Express validates and definitively commits the row to PostgreSQL as 'Booked'. 
+    \item An automated workflow executes the Resend API to deliver the QR attachment reliably.
+\end{enumerate}
+
+\section{Data Storage and Access Architecture}
+
+\begin{itemize}
+    \item \textbf{PostgreSQL + Prisma:} Maintains primary ACID-compliant persistence matrices corresponding to Users, Events, and confirmed Bookings. Prisma supplies rigid schema generation alongside automated GraphQL-like querying capabilities.
+    \item \textbf{Upstash Redis:} A key-value architectural extension strictly deployed to manage transient 'Locked' state caching prior to confirmed sale.
+    \item \textbf{Cloudinary:} Operates purely via cloud to intercept, format, and deliver all media assets uniformly.
+\end{itemize}
+
+\chapter{Implementation}
+
+The implementation of InstantBook embodies modern full-stack separations. The frontend directory serves Next.js client mechanics natively, while the backend directory focuses heavily on strict API business logic definitions.
+
+\section{Project Structure}
+
+\begin{verbatim}
+instant-book/
+├── backend/
+│   ├── src/           (Controllers, Routes, Middleware, Services)
+│   ├── prisma/        (Schema.prisma logic, Database seeding)
+│   ├── index.js       (Express core initialization)
+│   ├── package.json   (Module dependencies like bcrypt, resend, etc.)
+│
+├── frontend/
+│   ├── app/           (Next.js App router dynamics and pages)
+│   ├── components/    (Re-usable UI chunks, Radix-UI overlays)
+│   ├── store/         (Zustand client state managers)
+│   ├── lib/           (React-Query and Axios configs)
+│   ├── public/        (manifest.json, PWA icons)
+│   └── package.json
+│
+└── docker-compose.yml
+\end{verbatim}
+
+\section{Description of Core Modules}
+
+\subsection{Seat Configuration Module}
+\textbf{Purpose:} Enables reliable interactivity matching the 15x25 array interface.
+\begin{itemize}
+    \item \textbf{Frontend UI:} Nested grid iterations evaluate each seat via mapping algorithms matching real-time API polling data.
+    \item \textbf{Data Handlers:} Differentiates actively between empty coordinates, deeply booked, and currently locked states, applying distinctive CSS class structures instantly (using Tailwind-Merge).
+\end{itemize}
+
+\subsection{Checkout and Locking Module}
+\textbf{Purpose:} Guarantee transactional integrity leveraging Upstash Redis caches.
+\begin{itemize}
+    \item An API endpoint assigns a temporary unique identifier via the Redis key mechanism preventing collisions when heavy multi-user traffic filters into the cart initialization sequence.
+    \item Integrates Razorpay script tags directly ensuring Payment Card Industry (PCI) compliance. The frontend bypass logic resolves seamlessly via client verifications specifically calibrated to avoid blocking execution pathways.
+\end{itemize}
+
+\subsection{PWA and Validation Gateway}
+\textbf{Purpose:} Bridge native features and hardware scanning interfaces.
+\begin{itemize}
+    \item A comprehensive Service Worker securely caches external JS chunks and CSS layouts rendering the shell instantly visible even during heavy network drops.
+    \item The QR engine ingests stringified JSON hashes encoding metadata which HTML5-QRCode scripts efficiently unpack dynamically directly from mobile device lens sensors at the threshold point. 
+\end{itemize}
+
+\chapter{Testing}
+
+Evaluating robustness inside a heavy-load transaction environment necessitates rigid verification strategies covering caching collisions and financial pathway integrity. 
+
+\section{System and Unit Testing}
+System parameters were validated heavily against logical overlap parameters alongside standard component isolation.
+\begin{enumerate}
+    \item \textbf{Concurrency Locking Tests:} Deployed concurrent, virtually parallel manual selection arrays explicitly targeting single-seat matrix coordinates explicitly validating the Redis block functions perfectly handled race conditions seamlessly blocking the second requester precisely.
+    \item \textbf{Payment Verification Lifecycle:} Tested the Razorpay webhook callbacks meticulously ensuring successful API transfers triggered corresponding 'Lock' to 'Booked' PostgreSQL database flips natively without disruption.
+    \item \textbf{QR Scopes:} Validated multi-screen formatting ensuring QR encodings resolved clearly when evaluated via varied ambient lighting metrics utilized by the HTML5 module.
+\end{enumerate}
+
+\section{Security Paradigms}
+\begin{itemize}
+    \item JWT signatures explicitly mandate secure header transmissions avoiding localized cookie interception scenarios.
+    \item Prisma inherently parameterizes incoming DB queries aggressively halting traditional SQL Injection attempts mechanically.
+    \item Razorpay transactions ensure the backend code never materially processes raw credit ledger logic, relying directly on verified transaction hashes dynamically.
+\end{itemize}
+
+\chapter{Conclusion and Future Scope}
+
+\section{Conclusion}
+
+The \textbf{InstantBook — Book Event Tickets Instantly} platform actively mitigates the primary challenges encompassing modern event distribution. Through strict leveraging of powerful caching ecosystems interlaid harmoniously with high-fidelity React styling ecosystems, InstantBook bridges usability gaps distinctly.
+
+By engineering explicitly for PWA environments, the resulting product yields highly impressive tactile interactions comparable effectively to fully compiled mobile applications while sidestepping extensive app store deployments. The resolution of concurrency double-bookings alongside deeply transparent QR validation processes decisively cements InstantBook as an enterprise-grade conceptual framework.
+
+\section{Future Scope}
+
+The foundation configured readily allows immense analytical or logic expansion methodologies moving forward:
+\begin{itemize}
+    \item \textbf{Dynamic Price Scaling:} Architect rules adjusting real-time tier pricing based on active ticket inventory thresholds natively.
+    \item \textbf{Algorithmic Recommendations:} Implement AI-based curation evaluating user history clusters offering tightly relevant event alerts via native PWA Push Service protocols.
+    \item \textbf{Interactive Venues:} Expand the seat map mechanism extensively encompassing variable venue architectural schemas, VIP lounge mapping, and scalable sector panning effectively.
+\end{itemize}
+
+\renewcommand{\bibname}{References}
+\addcontentsline{toc}{chapter}{References}
+
+\begin{thebibliography}{99}
+
+\bibitem{nextjs}
+Next.js Documentation, \textit{The React Framework for the Web},  
+Available at: \url{https://nextjs.org/}
+
+\bibitem{reactjs}
+React Documentation, \textit{The library for web and native user interfaces},  
+Available at: \url{https://react.dev/}
+
+\bibitem{nodejs}
+Node.js Documentation, \textit{JavaScript runtime built on V8},  
+Available at: \url{https://nodejs.org/}
+
+\bibitem{postgres}
+PostgreSQL Documentation, \textit{The World's Most Advanced Open Source Relational Database},  
+Available at: \url{https://www.postgresql.org/}
+
+\bibitem{prisma}
+Prisma Documentation, \textit{Next-generation Node.js and TypeScript ORM},  
+Available at: \url{https://www.prisma.io/}
+
+\bibitem{redis}
+Redis Documentation, \textit{The open source, in-memory data store},  
+Available at: \url{https://redis.io/}
+
+\bibitem{tailwind}
+Tailwind CSS Documentation, \textit{Rapidly build modern websites without ever leaving your HTML},  
+Available at: \url{https://tailwindcss.com/}
+
+\bibitem{pwa}
+MDN Web Docs, \textit{Progressive web apps (PWAs)},  
+Available at: \url{https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps}
+
+\bibitem{razorpay}
+Razorpay Developer Documentation, \textit{Payment Gateway Integration},  
+Available at: \url{https://razorpay.com/docs/}
+
+\bibitem{qrcode}
+HTML5-QRCode Documentation, \textit{End to end QR code and barcode scanner for the web},  
+Available at: \url{https://github.com/mebjas/html5-qrcode}
+
+\end{thebibliography}
+
+\end{document}

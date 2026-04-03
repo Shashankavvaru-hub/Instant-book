@@ -100,3 +100,33 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/instantbook-frontend:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  # JOB 4: Deploy to local Minikube via self-hosted runner
+  deploy:
+    name: Deploy — Minikube (self-hosted)
+    runs-on: self-hosted
+    needs: [docker-push]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Verify kubectl & minikube connectivity
+        run: kubectl cluster-info
+
+      - name: Update image tags to latest commit SHA
+        run: |
+          kubectl set image deployment/instantbook-backend `
+            backend=${{ secrets.DOCKERHUB_USERNAME }}/instantbook-backend:${{ github.sha }}
+          kubectl set image deployment/instantbook-frontend `
+            frontend=${{ secrets.DOCKERHUB_USERNAME }}/instantbook-frontend:${{ github.sha }}
+
+      - name: Wait for backend rollout
+        run: kubectl rollout status deployment/instantbook-backend --timeout=180s
+
+      - name: Wait for frontend rollout
+        run: kubectl rollout status deployment/instantbook-frontend --timeout=180s
+
+      - name: Show running pods
+        run: kubectl get pods -o wide

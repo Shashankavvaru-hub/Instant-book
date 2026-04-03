@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: instantbook-backend
+  labels:
+    app: instantbook-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: instantbook-backend
+  template:
+    metadata:
+      labels:
+        app: instantbook-backend
+    spec:
+      containers:
+        - name: backend
+          # Replace YOUR_DOCKERHUB_USERNAME with your actual Docker Hub username
+          # or set it in k8s/kustomization (advanced). GitHub Actions uses the secret.
+          image: avvarushashank/instantbook-backend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 4000
+          envFrom:
+            - secretRef:
+                name: instantbook-backend-secret
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 4000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 4000
+            initialDelaySeconds: 20
+            periodSeconds: 10
