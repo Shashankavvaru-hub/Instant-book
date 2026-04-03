@@ -116,15 +116,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Copy kubeconfig to runner workspace
-        run: |
-          if not exist C:\kube mkdir C:\kube
-          copy /Y %USERPROFILE%\.kube\config C:\kube\config
-        env:
-          KUBECONFIG: C:\Users\shashank\.kube\config
+      - name: Prepare kubeconfig
+          run: |
+            mkdir C:\kube 2>nul
+            copy /Y C:\Users\shashank\.kube\config C:\kube\config
 
-      - name: Verify kubectl & minikube connectivity
-        run: kubectl cluster-info
+      - name: Verify kubectl
+          run: kubectl cluster-info
+          env:
+            KUBECONFIG: C:\kube\config
 
       - name: Update backend image tag
         run: kubectl set image deployment/instantbook-backend backend=${{ secrets.DOCKERHUB_USERNAME }}/instantbook-backend:${{ github.sha }}
