@@ -103,50 +103,50 @@ jobs:
 
   # JOB 4: Deploy to local Minikube via self-hosted runner
   deploy:
-  name: Deploy — Minikube (self-hosted)
-  runs-on: self-hosted
-  needs: [docker-push]
-  if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    name: Deploy — Minikube (self-hosted)
+    runs-on: self-hosted
+    needs: [docker-push]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
-  defaults:
-    run:
-      shell: cmd
+    defaults:
+      run:
+        shell: cmd
 
-  steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Prepare kubeconfig
-      run: |
-        mkdir C:\kube 2>nul
-        copy /Y C:\Users\shashank\.kube\config C:\kube\config
+      - name: Prepare kubeconfig
+        run: |
+          mkdir C:\kube 2>nul
+          copy /Y C:\Users\shashank\.kube\config C:\kube\config
 
-    - name: Verify kubectl
-      run: kubectl cluster-info
-      env:
-        KUBECONFIG: C:\kube\config
+      - name: Verify kubectl
+        run: kubectl cluster-info
+        env:
+          KUBECONFIG: C:\kube\config
 
-    - name: Update backend image tag
-      run: kubectl set image deployment/instantbook-backend backend=${{ secrets.DOCKERHUB_USERNAME }}/instantbook-backend:${{ github.sha }}
-      env:
-        KUBECONFIG: C:\kube\config
+      - name: Update backend image tag
+        run: kubectl set image deployment/instantbook-backend backend=${{ secrets.DOCKERHUB_USERNAME }}/instantbook-backend:${{ github.sha }}
+        env:
+          KUBECONFIG: C:\kube\config
 
-    - name: Update frontend image tag
-      run: kubectl set image deployment/instantbook-frontend frontend=${{ secrets.DOCKERHUB_USERNAME }}/instantbook-frontend:${{ github.sha }}
-      env:
-        KUBECONFIG: C:\kube\config
+      - name: Update frontend image tag
+        run: kubectl set image deployment/instantbook-frontend frontend=${{ secrets.DOCKERHUB_USERNAME }}/instantbook-frontend:${{ github.sha }}
+        env:
+          KUBECONFIG: C:\kube\config
 
-    - name: Wait for backend rollout
-      run: kubectl rollout status deployment/instantbook-backend --timeout=180s
-      env:
-        KUBECONFIG: C:\kube\config
+      - name: Wait for backend rollout
+        run: kubectl rollout status deployment/instantbook-backend --timeout=180s
+        env:
+          KUBECONFIG: C:\kube\config
 
-    - name: Wait for frontend rollout
-      run: kubectl rollout status deployment/instantbook-frontend --timeout=180s
-      env:
-        KUBECONFIG: C:\kube\config
+      - name: Wait for frontend rollout
+        run: kubectl rollout status deployment/instantbook-frontend --timeout=180s
+        env:
+          KUBECONFIG: C:\kube\config
 
-    - name: Show running pods
-      run: kubectl get pods -o wide
-      env:
-        KUBECONFIG: C:\kube\config
+      - name: Show running pods
+        run: kubectl get pods -o wide
+        env:
+          KUBECONFIG: C:\kube\config
