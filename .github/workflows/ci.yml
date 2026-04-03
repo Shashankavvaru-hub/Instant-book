@@ -117,12 +117,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Copy kubeconfig to runner workspace
-        shell: powershell
         run: |
-          $dest = "C:\kube"
-          if (!(Test-Path $dest)) { New-Item -ItemType Directory -Path $dest | Out-Null }
-          Copy-Item "$env:USERPROFILE\.kube\config" "C:\kube\config" -Force
-          echo "KUBECONFIG=C:\kube\config" >> $env:GITHUB_ENV
+          if not exist C:\kube mkdir C:\kube
+          copy /Y %USERPROFILE%\.kube\config C:\kube\config
+          echo KUBECONFIG=C:\kube\config>> %GITHUB_ENV%
 
       - name: Verify kubectl & minikube connectivity
         run: kubectl cluster-info
