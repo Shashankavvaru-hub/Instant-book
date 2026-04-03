@@ -3,6 +3,9 @@ FROM node:24-slim AS builder
 
 WORKDIR /app
 
+# Install openssl for Prisma engine (required on Debian Bookworm / node:slim)
+RUN apt-get update -qq && apt-get install -y --no-install-recommends openssl && rm -rf /var/lib/apt/lists/*
+
 # Copy dependency files first for better layer caching
 COPY package*.json ./
 
@@ -19,6 +22,9 @@ COPY . .
 FROM node:24-slim
 
 WORKDIR /app
+
+# Install openssl — required by Prisma query engine at runtime on Debian Bookworm
+RUN apt-get update -qq && apt-get install -y --no-install-recommends openssl && rm -rf /var/lib/apt/lists/*
 
 # Copy only production deps + source from builder
 COPY --from=builder /app/node_modules ./node_modules

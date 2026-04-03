@@ -60,6 +60,9 @@ app.use("/api/bookings", bookingRoutes);
 app.use("/api/tickets", ticketRoutes);
 app.use("/api/redis", (await import("./routes/redis.route.js")).default);
 
+// Health check — used by Kubernetes readiness & liveness probes
+app.get("/health", (req, res) => res.status(200).json({ status: "ok" }));
+
 // Global error handler
 app.use((err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
