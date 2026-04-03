@@ -29,11 +29,13 @@ spec:
             httpGet:
               path: /health
               port: 4000
-            initialDelaySeconds: 10
+            initialDelaySeconds: 15
             periodSeconds: 5
+            timeoutSeconds: 3
           livenessProbe:
             httpGet:
               path: /health
               port: 4000
-            initialDelaySeconds: 20
+            initialDelaySeconds: 25
             periodSeconds: 10
+            timeoutSeconds: 3
