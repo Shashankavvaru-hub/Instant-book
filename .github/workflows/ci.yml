@@ -120,7 +120,8 @@ jobs:
         run: |
           if not exist C:\kube mkdir C:\kube
           copy /Y %USERPROFILE%\.kube\config C:\kube\config
-          echo KUBECONFIG=C:\kube\config>> %GITHUB_ENV%
+        env:
+          KUBECONFIG: C:\Users\shashank\.kube\config
 
       - name: Verify kubectl & minikube connectivity
         run: kubectl cluster-info
