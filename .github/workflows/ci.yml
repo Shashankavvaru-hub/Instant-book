@@ -116,11 +116,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Prepare kubeconfig
-        run: |
-          mkdir C:\kube 2>nul
-          copy /Y C:\Users\shashank\.kube\config C:\kube\config
-
       - name: Verify kubectl
         run: kubectl cluster-info
         env:
