@@ -112,6 +112,9 @@ jobs:
       run:
         shell: cmd
 
+    env:
+      KUBECONFIG: C:\Users\shashank\.kube\config
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
