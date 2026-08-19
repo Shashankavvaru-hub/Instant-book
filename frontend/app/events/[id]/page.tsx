@@ -130,7 +130,7 @@ export default function EventDetailPage() {
   if (!event) return <p className="text-center text-zinc-400 mt-20">Event not found.</p>;
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="max-w-7xl mx-auto">
       {/* Hero banner */}
       <div className="relative rounded-2xl overflow-hidden mb-8 h-64 bg-gradient-to-br from-indigo-900/60 to-violet-900/60">
         {event.imageUrl && (
@@ -185,22 +185,24 @@ export default function EventDetailPage() {
             <a href="/login" className="text-indigo-400 hover:underline">Login</a> to view and select seats.
           </p>
         ) : (
-          <div className="space-y-2">
-            {Object.entries(rows).sort(([a], [b]) => a.localeCompare(b)).map(([row, rowSeats]) => (
-              <div key={row} className="flex items-center gap-2">
-                <span className="text-xs text-zinc-500 w-4 shrink-0 text-center">{row}</span>
-                <div className="flex flex-wrap gap-1.5">
-                  {rowSeats.sort((a, b) => a.seat.number - b.seat.number).map(seat => (
-                    <SeatButton
-                      key={seat.id}
-                      seat={seat}
-                      selected={selected.includes(seat.id)}
-                      onClick={() => toggleSeat(seat.id)}
-                    />
-                  ))}
+          <div className="overflow-x-auto w-full">
+            <div className="flex flex-col items-center gap-2 w-full">
+              {Object.entries(rows).sort(([a], [b]) => a.localeCompare(b)).map(([row, rowSeats]) => (
+                <div key={row} className="flex items-center gap-2">
+                  <span className="text-xs text-zinc-500 w-4 shrink-0 text-center">{row}</span>
+                  <div className="flex flex-nowrap gap-1.5">
+                    {rowSeats.sort((a, b) => a.seat.number - b.seat.number).map(seat => (
+                      <SeatButton
+                        key={seat.id}
+                        seat={seat}
+                        selected={selected.includes(seat.id)}
+                        onClick={() => toggleSeat(seat.id)}
+                      />
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         )}
 
