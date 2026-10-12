@@ -36,6 +36,8 @@ export interface Booking {
   id: number;
   bookingReference: string;
   status: "PENDING" | "CONFIRMED" | "CANCELLED" | "EXPIRED";
+  checkedIn?: boolean;
+  checkedInAt?: string;
   totalAmount: string;
   expiresAt: string;
   createdAt: string;
@@ -62,6 +64,8 @@ export interface BookingDetail {
   bookingReference: string;
   totalAmount: string;
   status: "PENDING" | "CONFIRMED" | "CANCELLED" | "EXPIRED";
+  checkedIn?: boolean;
+  checkedInAt?: string;
   expiresAt: string;
   qrCodeUrl?: string;
   event: { id: number; title: string };

@@ -1,3 +1,4 @@
+import "dotenv/config";
 import QRCode from "qrcode";
 import cloudinary from "../config/cloudinary.js";
 import { prisma } from "../config/prisma.js";
@@ -11,6 +12,13 @@ import { prisma } from "../config/prisma.js";
  * @returns {string} the Cloudinary URL of the uploaded QR code image
  */
 export const generateAndStoreTicket = async (bookingId, bookingReference) => {
+  // Ensure Cloudinary credentials are fully loaded
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
+
   // 1. Build the QR payload — scannable string that uniquely identifies the booking
   const qrPayload = `INSTANT-BOOK:${bookingReference}`;
 

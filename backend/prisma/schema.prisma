@@ -131,6 +131,9 @@ model Booking {
 
   expiresAt DateTime
 
+  checkedIn   Boolean   @default(false)
+  checkedInAt DateTime?
+
   bookingSeats BookingSeat[]
   payment      Payment?
 

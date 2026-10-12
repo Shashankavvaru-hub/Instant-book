@@ -29,6 +29,13 @@ export const processRefund = async (bookingId) => {
     );
   }
 
+  if (booking.checkedIn) {
+    throw new AppError(
+      "Cannot cancel or refund a booking that has already checked in at the venue.",
+      400
+    );
+  }
+
   const payment = booking.payment;
 
   if (!payment || payment.status !== "SUCCESS") {

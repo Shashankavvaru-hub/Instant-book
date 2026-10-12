@@ -3,11 +3,11 @@ import { AppError } from "../utils/AppError.js";
 import { prisma } from "../config/prisma.js";
 import { randomUUID } from "crypto";
 import { razorpay } from "../config/razorpay.js";
+import { generateAndStoreTicket } from "./ticket.service.js";
 
 // lockSeats.js
 export const lockSeats = async (eventId, eventSeatIds, userId) => {
   const pipeline = redis.multi();
-  console.log("Attempting to acquire locks for seats:", eventSeatIds);
 
   for (const eventSeatId of eventSeatIds) {
     const key = `lock:${eventId}:${eventSeatId}`;
@@ -18,16 +18,29 @@ export const lockSeats = async (eventId, eventSeatIds, userId) => {
     });
   }
 
-  if (pipeline.length === 0) {
-    throw new AppError("No seats to lock", 400);
-  }
-
   const results = await pipeline.exec();
 
-  for (const res of results) {
-    if (res === null) {
-      throw new Error("One or more seats already locked");
+  const acquiredSeats = [];
+
+  for (let i = 0; i < results.length; i++) {
+    const result = results[i];
+
+    if (result !== null) {
+      acquiredSeats.push(eventSeatIds[i]);
     }
+  }
+
+  // At least one seat failed
+  if (acquiredSeats.length !== eventSeatIds.length) {
+    const cleanup = redis.multi();
+
+    for (const seatId of acquiredSeats) {
+      cleanup.del(`lock:${eventId}:${seatId}`);
+    }
+
+    await cleanup.exec();
+
+    throw new Error("One or more seats already locked");
   }
 };
 
@@ -245,6 +258,8 @@ export const getMyBookingsService = async (userId) => {
       id: true,
       bookingReference: true,
       status: true,
+      checkedIn: true,
+      checkedInAt: true,
       totalAmount: true,
       expiresAt: true,
       createdAt: true,
@@ -271,13 +286,15 @@ export const getBookingDetailsService = async (bookingId) => {
     throw new AppError("Booking ID is required", 400);
   }
 
-  return await prisma.booking.findUnique({
+  const booking = await prisma.booking.findUnique({
     where: { id: Number(bookingId) },
     select: {
       id: true,
       bookingReference: true,
       totalAmount: true,
       status: true,
+      checkedIn: true,
+      checkedInAt: true,
       expiresAt: true,
       qrCodeUrl: true,
 
@@ -299,4 +316,15 @@ export const getBookingDetailsService = async (bookingId) => {
       },
     },
   });
+
+  // On-demand QR generation: if confirmed booking is missing its QR code, generate and save it now
+  if (booking && booking.status === "CONFIRMED" && !booking.qrCodeUrl) {
+    try {
+      booking.qrCodeUrl = await generateAndStoreTicket(booking.id, booking.bookingReference);
+    } catch (err) {
+      console.error(`[ticket] On-demand QR generation failed for booking #${booking.id}:`, err.message);
+    }
+  }
+
+  return booking;
 };

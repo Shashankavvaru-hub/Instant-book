@@ -70,7 +70,12 @@ export const createPayment = async (bookingId: number): Promise<Payment> => {
 };
 
 // ── Tickets ──────────────────────────────────────────────────────────────────
-export const verifyTicket = async (bookingReference: string) => {
-  const res = await api.post("/tickets/verify", { bookingReference });
+export const verifyTicket = async (bookingReference: string, checkIn = true) => {
+  const res = await api.post("/tickets/verify", { bookingReference, checkIn });
+  return res.data;
+};
+
+export const resetTicketCheckIn = async (bookingReference: string) => {
+  const res = await api.post("/tickets/reset-checkin", { bookingReference });
   return res.data;
 };

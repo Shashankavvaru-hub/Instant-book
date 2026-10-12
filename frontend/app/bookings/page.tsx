@@ -44,9 +44,16 @@ function BookingCard({ booking }: { booking: Booking }) {
             </div>
           </div>
           <div className="flex flex-col items-end gap-2 shrink-0">
-            <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full border ${statusColor[booking.status]}`}>
-              {booking.status}
-            </span>
+            <div className="flex items-center gap-1.5">
+              {booking.checkedIn && (
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                  Checked In
+                </span>
+              )}
+              <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full border ${statusColor[booking.status]}`}>
+                {booking.status}
+              </span>
+            </div>
             <span className="text-sm font-bold text-white">{formatCurrency(booking.totalAmount)}</span>
             <ArrowRight className="h-4 w-4 text-zinc-600 group-hover:text-indigo-400 transition-colors" />
           </div>

@@ -139,9 +139,13 @@ export const finalizeBooking = async (gatewayOrderId, gatewayPaymentId) => {
 
   // Release Redis locks now that the booking is permanently confirmed
   if (result.seatIds.length > 0) {
-    const lockKeys = result.seatIds.map((id) => `lock:${result.eventId}:${id}`);
-    console.log("Releasing locks:", lockKeys);
-    await redis.del(...lockKeys);
+    try {
+      const lockKeys = result.seatIds.map((id) => `lock:${result.eventId}:${id}`);
+      console.log("Releasing locks:", lockKeys);
+      await redis.del(...lockKeys);
+    } catch (lockErr) {
+      console.warn("[payment] Failed to release Redis locks (non-fatal):", lockErr.message);
+    }
   }
 
   // Generate QR code ticket and upload to Cloudinary (outside transaction — safe to retry)

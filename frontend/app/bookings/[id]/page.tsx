@@ -57,7 +57,8 @@ export default function BookingDetailPage() {
   if (!booking) return <p className="text-center text-zinc-400 mt-20">Booking not found.</p>;
 
   const isConfirmed = booking.status === "CONFIRMED";
-  const isCancellable = booking.status === "PENDING" || booking.status === "CONFIRMED";
+  const isCancellable =
+    (booking.status === "PENDING" || booking.status === "CONFIRMED") && !booking.checkedIn;
 
   return (
     <div className="max-w-lg mx-auto">
@@ -74,24 +75,58 @@ export default function BookingDetailPage() {
               <Calendar className="h-3.5 w-3.5" /> {formatDate(booking.expiresAt)}
             </p>
           </div>
-          <span className={`text-xs font-medium px-2.5 py-1 rounded-full border ${statusColor[booking.status]}`}>
-            {booking.status}
-          </span>
+          <div className="flex flex-col items-end gap-1.5">
+            <span className={`text-xs font-medium px-2.5 py-1 rounded-full border ${statusColor[booking.status]}`}>
+              {booking.status}
+            </span>
+            {booking.checkedIn && (
+              <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                ✓ Checked In
+              </span>
+            )}
+          </div>
         </div>
 
         {/* QR Code */}
         {isConfirmed && booking.qrCodeUrl && (
           <div className="flex flex-col items-center py-4 border border-white/10 rounded-2xl bg-white/[0.03]">
-            <p className="text-xs text-zinc-400 mb-3 uppercase tracking-widest font-medium">Your Entry QR Code</p>
-            <Image
-              src={booking.qrCodeUrl}
-              alt="QR Code"
-              width={176}
-              height={176}
-              unoptimized
-              className="rounded-xl border border-white/10"
-            />
-            <p className="text-xs text-zinc-500 mt-3">Show this at the venue entrance</p>
+            <p className="text-xs text-zinc-400 mb-3 uppercase tracking-widest font-medium">
+              {booking.checkedIn ? "Entry QR Code (Used)" : "Your Entry QR Code"}
+            </p>
+            <div className="relative">
+              <Image
+                src={booking.qrCodeUrl}
+                alt="QR Code"
+                width={176}
+                height={176}
+                unoptimized
+                className={`rounded-xl border ${
+                  booking.checkedIn
+                    ? "border-emerald-500/40 opacity-75"
+                    : "border-white/10"
+                }`}
+              />
+              {booking.checkedIn && (
+                <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px] rounded-xl flex flex-col items-center justify-center p-2 text-center">
+                  <span className="bg-emerald-500 text-black font-bold text-xs px-2.5 py-1 rounded-full shadow-md">
+                    ADMITTED
+                  </span>
+                  {booking.checkedInAt && (
+                    <span className="text-[10px] text-white/90 mt-1.5 font-medium">
+                      {new Date(booking.checkedInAt).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
+            <p className="text-xs text-zinc-500 mt-3">
+              {booking.checkedIn
+                ? "This ticket has been scanned and verified at the venue entrance"
+                : "Show this at the venue entrance"}
+            </p>
           </div>
         )}
 
