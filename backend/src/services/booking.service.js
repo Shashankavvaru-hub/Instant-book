@@ -32,15 +32,17 @@ export const lockSeats = async (eventId, eventSeatIds, userId) => {
 
   // At least one seat failed
   if (acquiredSeats.length !== eventSeatIds.length) {
-    const cleanup = redis.multi();
+    if (acquiredSeats.length > 0) {
+      const cleanup = redis.multi();
 
-    for (const seatId of acquiredSeats) {
-      cleanup.del(`lock:${eventId}:${seatId}`);
+      for (const seatId of acquiredSeats) {
+        cleanup.del(`lock:${eventId}:${seatId}`);
+      }
+
+      await cleanup.exec();
     }
 
-    await cleanup.exec();
-
-    throw new Error("One or more seats already locked");
+    throw new AppError("One or more seats already locked", 409);
   }
 };
 
